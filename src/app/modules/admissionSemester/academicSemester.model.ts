@@ -1,8 +1,12 @@
 import { model, Schema } from "mongoose";
-import { TAdmissionSemester } from "./admissionSemester.interface";
-import { academicSemesterCode, academicSemesterName, months } from "./admissionSemester.constant";
+import { TAdmissionSemester } from "./academicSemester.interface";
+import {
+    academicSemesterCode,
+    academicSemesterName,
+    months,
+} from "./academicSemester.constant";
 
-const admissionSemesterSchema = new Schema<TAdmissionSemester>(
+const academicSemesterSchema = new Schema<TAdmissionSemester>(
     {
         name: {
             type: String,
@@ -17,7 +21,7 @@ const admissionSemesterSchema = new Schema<TAdmissionSemester>(
             required: [true, "code must be required"],
         },
         year: {
-            type: Date,
+            type: String,
             required: [true, "year must be required"],
         },
         startMonth: {
@@ -36,6 +40,6 @@ const admissionSemesterSchema = new Schema<TAdmissionSemester>(
     },
 );
 
-const AdmissionSemester = model("AdmissionSemester", admissionSemesterSchema);
+const AcademicSemester = model("AcademicSemester", academicSemesterSchema);
 
-export default AdmissionSemester;
+export default AcademicSemester;
