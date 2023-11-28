@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
 import morgan from "morgan";
-import { userRouter } from "./modules/user/user.routes";
+import rootRoutes from "./routes";
 import {
     errorHandler,
     notFoundError,
@@ -22,7 +22,7 @@ app.get("/health", (_req: Request, res: Response) => {
 });
 
 // routes
-app.use("/api/users", userRouter);
+app.use("/api/v1", rootRoutes);
 
 // error boundary
 app.use(notFoundError);

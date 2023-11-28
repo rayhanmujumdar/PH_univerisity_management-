@@ -1,28 +1,18 @@
 import httpStatus from "http-status";
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { createStudentIntoDB } from "./user.services";
-import { studentValidationSchema } from "../student/student.validation";
 import sendResponse from "../../lib/sendResponse";
+import catchAsync from "../../lib/catchAsync";
 
-export const createStudentController = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => {
-    try {
+export const createStudentController = catchAsync(
+    async (req: Request, res: Response) => {
         const { password, student } = req.body;
-        const studentDataValidation = studentValidationSchema.parse(student);
-        const newStudentData = await createStudentIntoDB(
-            password,
-            studentDataValidation,
-        );
+        const newStudentData = await createStudentIntoDB(password, student);
         sendResponse(res, {
             success: true,
             message: "Student created successfully",
             statusCode: httpStatus.CREATED,
             data: newStudentData,
         });
-    } catch (err) {
-        next(err);
-    }
-};
+    },
+);
