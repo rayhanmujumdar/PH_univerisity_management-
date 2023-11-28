@@ -11,6 +11,7 @@ function databaseReboot(url: string) {
 
 databaseReboot(config.database_url as string).then(() => {
     server.listen(config.port, () => {
+        // eslint-disable-next-line no-console
         console.log(`Server listening port is ${config.port}`);
     });
 });
