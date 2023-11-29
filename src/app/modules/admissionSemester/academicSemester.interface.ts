@@ -13,10 +13,14 @@ export type TMonths =
     | "December";
 export type TAcademicSemesterName = "Autumn" | "Summer" | "Fall";
 export type TAcademicSemesterCode = "01" | "02" | "03";
-export type TAdmissionSemester = {
+export type TAcademicSemester = {
     name: TAcademicSemesterName;
     year: string;
     code: TAcademicSemesterCode;
     startMonth: TMonths;
     endMonth: TMonths;
+};
+
+export type TSemesterCodeAndNameMatchMapping = {
+    [key: string]: string;
 };

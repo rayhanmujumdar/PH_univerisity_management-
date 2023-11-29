@@ -5,6 +5,7 @@ import {
     academicSemesterName,
     months,
 } from "./academicSemester.constant";
+import error from "../../lib/error";
 
 const academicSemesterSchema = new Schema<TAdmissionSemester>(
     {
@@ -39,6 +40,18 @@ const academicSemesterSchema = new Schema<TAdmissionSemester>(
         timestamps: true,
     },
 );
+
+// check same name or same year semester are already.
+academicSemesterSchema.pre("save", async function (next) {
+    const isSemesterExist = await AcademicSemester.findOne({
+        year: this.year,
+        name: this.name,
+    });
+    if (isSemesterExist) {
+        throw error(500, "Semester is already exist");
+    }
+    next();
+});
 
 const AcademicSemester = model("AcademicSemester", academicSemesterSchema);
 
