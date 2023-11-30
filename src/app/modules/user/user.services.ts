@@ -1,11 +1,11 @@
 import config from "../../config";
 import error from "../../lib/error";
-import AcademicSemester from "../admissionSemester/academicSemester.model";
+import AcademicSemester from "../academicSemester/academicSemester.model";
 import { TStudent } from "../student/student.interface";
 import { Student } from "../student/student.model";
 import { TUser } from "./user.interface";
 import { User } from "./user.model";
-import { generateStudentId } from "./user.utilis";
+import { duplicateEmailCheck, generateStudentId } from "./user.utilis";
 
 export const createStudentIntoDB = async (
     password: string,
@@ -22,7 +22,10 @@ export const createStudentIntoDB = async (
     userData.password = password
         ? password
         : (config.default_password as string);
-
+    const isExistEmailIntoDB = await duplicateEmailCheck(studentData.email);
+    if (isExistEmailIntoDB) {
+        throw error(500, "Email already exist");
+    }
     userData.role = "student";
     // set manually generated id
     userData.id = await generateStudentId(semesterData);
