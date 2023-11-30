@@ -1,8 +1,11 @@
 import config from "../../config";
+import error from "../../lib/error";
+import AcademicSemester from "../admissionSemester/academicSemester.model";
 import { TStudent } from "../student/student.interface";
 import { Student } from "../student/student.model";
 import { TUser } from "./user.interface";
 import { User } from "./user.model";
+import { generateStudentId } from "./user.utilis";
 
 export const createStudentIntoDB = async (
     password: string,
@@ -10,12 +13,19 @@ export const createStudentIntoDB = async (
 ) => {
     // create a new user
     const userData: Partial<TUser> = {};
+    const semesterData = await AcademicSemester.findById(
+        studentData.admissionSemester,
+    );
+    if (!semesterData) {
+        throw error(500, "semester not found");
+    }
     userData.password = password
         ? password
         : (config.default_password as string);
+
     userData.role = "student";
     // set manually generated id
-    userData.id = "2030100031";
+    userData.id = await generateStudentId(semesterData);
     // create a user
     const newUser = await User.create(userData);
     if (Object.keys(newUser).length) {

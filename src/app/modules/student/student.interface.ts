@@ -1,5 +1,4 @@
 import { Types } from "mongoose";
-
 // gender type
 export type TGender = "male" | "female" | "other";
 // user name type
@@ -43,5 +42,6 @@ export type TStudent = {
     localGuardian: TLocalGuardian;
     profileImg: string;
     department: string;
+    admissionSemester: Types.ObjectId;
     isDeleted: boolean;
 };

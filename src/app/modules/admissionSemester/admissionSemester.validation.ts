@@ -21,3 +21,29 @@ export const createAdmissionSemesterValidationSchema = z.object({
         }),
     }),
 });
+
+export const updateAdmissionSemesterValidationSchema = z.object({
+    body: z.object({
+        name: z
+            .enum([...academicSemesterName] as [string, ...string[]], {
+                required_error: "name must be required",
+            })
+            .optional(),
+        year: z.string({ required_error: "year must be required" }).optional(),
+        code: z
+            .enum([...academicSemesterCode] as [string, ...string[]], {
+                required_error: "code must be required",
+            })
+            .optional(),
+        startMonth: z
+            .enum([...months] as [string, ...string[]], {
+                required_error: "startMonth must be required",
+            })
+            .optional(),
+        endMonth: z
+            .enum([...months] as [string, ...string[]], {
+                required_error: "endMonth must be required",
+            })
+            .optional(),
+    }),
+});

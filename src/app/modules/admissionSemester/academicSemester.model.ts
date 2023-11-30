@@ -1,13 +1,13 @@
 import { model, Schema } from "mongoose";
-import { TAdmissionSemester } from "./academicSemester.interface";
 import {
     academicSemesterCode,
     academicSemesterName,
     months,
 } from "./academicSemester.constant";
 import error from "../../lib/error";
+import { TAcademicSemester } from "./academicSemester.interface";
 
-const academicSemesterSchema = new Schema<TAdmissionSemester>(
+const academicSemesterSchema = new Schema<TAcademicSemester>(
     {
         name: {
             type: String,

@@ -6,7 +6,10 @@ import {
     updateASingleAcademicSemesterController,
 } from "./academicSemester.controller";
 import checkValidation from "../../middleware/checkValidation";
-import { createAdmissionSemesterValidationSchema } from "./admissionSemester.validation";
+import {
+    createAdmissionSemesterValidationSchema,
+    updateAdmissionSemesterValidationSchema,
+} from "./admissionSemester.validation";
 
 const router = Router();
 
@@ -25,7 +28,7 @@ router.get("/:id", getASingleAcademicSemesterController);
 // update academic semester
 router.patch(
     "/:id",
-    checkValidation(createAdmissionSemesterValidationSchema),
+    checkValidation(updateAdmissionSemesterValidationSchema),
     updateASingleAcademicSemesterController,
 );
 

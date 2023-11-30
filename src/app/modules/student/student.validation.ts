@@ -95,7 +95,10 @@ export const studentValidationSchema = z.object({
             }),
             guardian: guardianValidationSchema.required(),
             localGuardian: localGuardianValidationSchema.required(),
-            profileImg: z.string().regex(new RegExp("")).optional(),
+            admissionSemester: z.string({
+                required_error: "admissionSemester must be required",
+            }),
+            profileImg: z.string().optional(),
             department: z.string({
                 required_error: "department must be required",
             }),

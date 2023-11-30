@@ -75,63 +75,74 @@ export const localGuardianSchema = new Schema<TLocalGuardian>(
     { _id: false },
 );
 
-const studentSchema = new Schema<TStudent>({
-    id: {
-        type: String,
-        required: true,
-        unique: true,
+const studentSchema = new Schema<TStudent>(
+    {
+        id: {
+            type: String,
+            required: true,
+            unique: true,
+        },
+        userId: {
+            type: Schema.Types.ObjectId,
+            required: true,
+            unique: true,
+            ref: "User",
+        },
+        name: userNameSchema,
+        gender: {
+            type: String,
+            enum: ["male", "female", "other"],
+            required: true,
+        },
+        age: {
+            type: Number,
+            required: true,
+        },
+        dateOfBirth: {
+            type: String,
+            required: true,
+        },
+        email: {
+            type: String,
+            unique: true,
+            required: true,
+        },
+        contactNo: {
+            type: String,
+            required: true,
+        },
+        emergencyContactNo: {
+            type: String,
+            required: true,
+        },
+        presentAddress: {
+            type: String,
+            required: true,
+        },
+        permanentAddress: {
+            type: String,
+            required: true,
+        },
+        guardian: guardianSchema,
+        localGuardian: localGuardianSchema,
+        profileImg: String,
+        department: {
+            type: String,
+            required: true,
+        },
+        admissionSemester: {
+            type: Schema.Types.ObjectId,
+            required: true,
+            ref: "AcademicSemester",
+        },
+        isDeleted: {
+            type: Boolean,
+            default: false,
+        },
     },
-    userId: {
-        type: Schema.Types.ObjectId,
-        required: true,
-        unique: true,
-        ref: "User",
+    {
+        timestamps: true,
     },
-    name: userNameSchema,
-    gender: {
-        type: String,
-        enum: ["male", "female", "other"],
-        required: true,
-    },
-    age: {
-        type: Number,
-        required: true,
-    },
-    dateOfBirth: {
-        type: String,
-        required: true,
-    },
-    email: {
-        type: String,
-        required: true,
-    },
-    contactNo: {
-        type: String,
-        required: true,
-    },
-    emergencyContactNo: {
-        type: String,
-        required: true,
-    },
-    presentAddress: {
-        type: String,
-        required: true,
-    },
-    permanentAddress: {
-        type: String,
-        required: true,
-    },
-    guardian: guardianSchema,
-    localGuardian: localGuardianSchema,
-    profileImg: String,
-    department: {
-        type: String,
-        required: true,
-    },
-    isDeleted: {
-        type: Boolean,
-        default: false,
-    },
-});
+);
 
 export const Student = model<TStudent>("Student", studentSchema);

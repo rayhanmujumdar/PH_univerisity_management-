@@ -1,8 +1,8 @@
-import httpStatus from "http-status";
 import { Request, Response } from "express";
-import { createStudentIntoDB } from "./user.services";
-import sendResponse from "../../lib/sendResponse";
+import httpStatus from "http-status";
 import catchAsync from "../../lib/catchAsync";
+import sendResponse from "../../lib/sendResponse";
+import { createStudentIntoDB } from "./user.services";
 
 export const createStudentController = catchAsync(
     async (req: Request, res: Response) => {

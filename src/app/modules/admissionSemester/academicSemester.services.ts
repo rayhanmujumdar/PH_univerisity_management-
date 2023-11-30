@@ -27,9 +27,11 @@ export const getSingleAcademicSemesterService = (id: string) => {
 // update a single academic semester service
 export const updateASingleAcademicSemesterService = (
     id: string,
-    semesterData: TAcademicSemester,
+    semesterData: Partial<TAcademicSemester>,
 ) => {
     if (
+        semesterData.name &&
+        semesterData.code &&
         semesterCodeAndNameMatchMapping[semesterData.name] !== semesterData.code
     ) {
         throw error(500, "invalid semester code");
