@@ -8,9 +8,9 @@ export const createAcademicDepartmentValidation = z.object({
                 invalid_type_error: "name must be a string value",
             })
             .trim(),
-        academicSemesterId: z.string({
-            required_error: "academicSemesterId must be required",
-            invalid_type_error: "academicSemester must be a string",
+        academicFacultyId: z.string({
+            required_error: "academicFacultyId must be required",
+            invalid_type_error: "academicFacultyId must be a string",
         }),
     }),
 });
@@ -24,10 +24,10 @@ export const updateAcademicDepartmentValidation = z.object({
             })
             .trim()
             .optional(),
-        academicSemesterId: z
+        academicFacultyId: z
             .string({
-                required_error: "academicSemesterId must be required",
-                invalid_type_error: "academicSemester must be a string",
+                required_error: "academicFacultyId must be required",
+                invalid_type_error: "academicFacultyId must be a string",
             })
             .optional(),
     }),

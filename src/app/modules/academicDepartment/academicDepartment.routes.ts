@@ -14,7 +14,7 @@ import {
 const academicDepartmentRoutes = Router();
 
 // create academic department route
-academicDepartmentRoutes.get(
+academicDepartmentRoutes.post(
     "/create-academic-department",
     checkValidation(createAcademicDepartmentValidation),
     createAcademicDepartmentController,
@@ -30,4 +30,4 @@ academicDepartmentRoutes.patch(
     updateAcademicDepartmentController,
 );
 
-export default academicDepartmentRoutes
+export default academicDepartmentRoutes;
