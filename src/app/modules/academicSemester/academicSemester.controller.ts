@@ -7,6 +7,7 @@ import {
     getSingleAcademicSemesterService,
     updateASingleAcademicSemesterService,
 } from "./academicSemester.services";
+import error from "../../lib/error";
 
 // create new academic semester
 export const createAcademicSemesterController = catchAsync(async (req, res) => {
@@ -53,6 +54,9 @@ export const updateASingleAcademicSemesterController = catchAsync(
             id,
             semesterData,
         );
+        if(!result){
+            throw error(500,"semester update failed")
+        }
         sendResponse(res, {
             success: true,
             statusCode: httpStatus.OK,
