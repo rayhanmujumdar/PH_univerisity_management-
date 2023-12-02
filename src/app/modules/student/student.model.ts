@@ -1,4 +1,6 @@
+import httpStatus from "http-status";
 import { Schema, model } from "mongoose";
+import error from "../../lib/error";
 import {
     TGuardian,
     TLocalGuardian,
@@ -130,10 +132,15 @@ const studentSchema = new Schema<TStudent>(
             type: String,
             required: true,
         },
-        admissionSemester: {
+        academicSemester: {
             type: Schema.Types.ObjectId,
             required: true,
             ref: "AcademicSemester",
+        },
+        academicDepartment: {
+            type: Schema.Types.ObjectId,
+            required: true,
+            ref: "AcademicDepartment",
         },
         isDeleted: {
             type: Boolean,
@@ -144,5 +151,15 @@ const studentSchema = new Schema<TStudent>(
         timestamps: true,
     },
 );
+
+// check isStudent exist in database
+studentSchema.pre("findOneAndUpdate", async function (next) {
+    const query = this.getQuery();
+    const isStudentExist = await this.model.findOne(query);
+    if (!isStudentExist) {
+        next(error(httpStatus.NOT_FOUND, "Student does not exist"));
+    }
+    next();
+});
 
 export const Student = model<TStudent>("Student", studentSchema);

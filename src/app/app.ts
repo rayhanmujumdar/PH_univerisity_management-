@@ -1,11 +1,11 @@
-import express, { Request, Response } from "express";
 import cors from "cors";
+import express, { Request, Response } from "express";
 import morgan from "morgan";
-import rootRoutes from "./routes";
 import {
     errorHandler,
     notFoundError,
 } from "./ErrorBoundary/globalErrorHandler";
+import rootRoutes from "./routes";
 const app = express();
 
 // middleware

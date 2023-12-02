@@ -14,7 +14,7 @@ export const createStudentIntoDB = async (
     // create a new user
     const userData: Partial<TUser> = {};
     const semesterData = await AcademicSemester.findById(
-        studentData.admissionSemester,
+        studentData.academicSemester,
     );
     if (!semesterData) {
         throw error(500, "semester not found");

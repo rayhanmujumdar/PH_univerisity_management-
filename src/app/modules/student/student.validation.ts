@@ -44,7 +44,7 @@ export const localGuardianValidationSchema = z.object({
         ),
 });
 
-export const studentValidationSchema = z.object({
+export const createStudentValidationSchema = z.object({
     body: z.object({
         password: z.string().min(6).max(20).optional(),
         student: z.object({
@@ -95,7 +95,10 @@ export const studentValidationSchema = z.object({
             }),
             guardian: guardianValidationSchema.required(),
             localGuardian: localGuardianValidationSchema.required(),
-            admissionSemester: z.string({
+            academicSemester: z.string({
+                required_error: "admissionSemester must be required",
+            }),
+            academicDepartment: z.string({
                 required_error: "admissionSemester must be required",
             }),
             profileImg: z.string().optional(),
@@ -103,5 +106,82 @@ export const studentValidationSchema = z.object({
                 required_error: "department must be required",
             }),
         }),
+    }),
+});
+
+export const updateStudentValidationSchema = z.object({
+    body: z.object({
+        name: userNameValidationSchema.optional(),
+        gender: z
+            .enum(["male", "female", "other"], {
+                required_error: "gender must be required",
+            })
+            .optional(),
+        age: z.number({ required_error: "age must be required" }).optional(),
+        dateOfBirth: z
+            .string({
+                required_error: "dateOfBirth must be required",
+            })
+            .optional(),
+        email: z
+            .string({ required_error: "email must be required" })
+            .email({ message: "please provide a valid email address" })
+            .optional(),
+        contactNo: z
+            .string({ required_error: "contactNo must be required" })
+            .refine(
+                (val) => {
+                    return /(^(\+88|0088)?(01){1}[3456789]{1}(\d){8})$/.test(
+                        val,
+                    );
+                },
+                {
+                    message: "please provided bangladeshi valid phone number",
+                },
+            )
+            .optional(),
+        emergencyContactNo: z
+            .string({
+                required_error: "emergencyContactNo must be required",
+            })
+            .refine(
+                (val) => {
+                    return /(^(\+88|0088)?(01){1}[3456789]{1}(\d){8})$/.test(
+                        val,
+                    );
+                },
+                {
+                    message: "please provided bangladeshi valid phone number",
+                },
+            )
+            .optional(),
+        presentAddress: z
+            .string({
+                required_error: "presentAddress must be required",
+            })
+            .optional(),
+        permanentAddress: z
+            .string({
+                required_error: "permanentAddress must be required",
+            })
+            .optional(),
+        guardian: guardianValidationSchema.optional(),
+        localGuardian: localGuardianValidationSchema.optional(),
+        academicSemester: z
+            .string({
+                required_error: "admissionSemester must be required",
+            })
+            .optional(),
+        academicDepartment: z
+            .string({
+                required_error: "admissionSemester must be required",
+            })
+            .optional(),
+        profileImg: z.string().optional(),
+        department: z
+            .string({
+                required_error: "department must be required",
+            })
+            .optional(),
     }),
 });
