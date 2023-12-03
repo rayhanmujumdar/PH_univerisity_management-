@@ -20,7 +20,7 @@ export const getAllStudentService = () => {
 
 // get single student service
 export const getSingleStudentService = async (id: string) => {
-    const student = await Student.findById(id)
+    const student = await Student.findOne({ id })
         .populate("academicSemester")
         .populate({
             path: "academicDepartment",
@@ -37,9 +37,29 @@ export const getSingleStudentService = async (id: string) => {
 // update student service
 export const updateStudentService = (
     id: string,
-    studentData: Partial<TStudent>,
+    payload: Partial<TStudent>,
 ) => {
-    return Student.findByIdAndUpdate(id, studentData, { new: true });
+    const { name, guardian, localGuardian, ...remainingPayload } = payload;
+    const modifyUpdatedData: Record<string, unknown> = { ...remainingPayload };
+    if (name && Object.keys(name).length) {
+        for (const [key, value] of Object.entries(name)) {
+            modifyUpdatedData[`name.${key}`] = value;
+        }
+    }
+    if (guardian && Object.keys(guardian).length) {
+        for (const [key, value] of Object.entries(guardian)) {
+            modifyUpdatedData[`guardian.${key}`] = value;
+        }
+    }
+    if (localGuardian && Object.keys(localGuardian).length) {
+        for (const [key, value] of Object.entries(localGuardian)) {
+            modifyUpdatedData[`localGuardian.${key}`] = value;
+        }
+    }
+    return Student.findOneAndUpdate({ id }, modifyUpdatedData, {
+        new: true,
+        runValidators: true,
+    });
 };
 
 export const deleteStudentService = async (id: string) => {

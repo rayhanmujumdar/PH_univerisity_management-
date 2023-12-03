@@ -1,5 +1,6 @@
 import httpStatus from "http-status";
 import catchAsync from "../../lib/catchAsync";
+import { AppError } from "../../lib/error";
 import sendResponse from "../../lib/sendResponse";
 import {
     createAcademicDepartmentService,
@@ -27,7 +28,7 @@ export const getAllAcademicDepartmentController = catchAsync(
         const result = await getAllAcademicDepartmentService();
         sendResponse(res, {
             success: true,
-            message: "new academic department created successfully ",
+            message: "fetch all academic department",
             statusCode: httpStatus.CREATED,
             data: result,
         });
@@ -38,9 +39,14 @@ export const getSingleAcademicDepartmentController = catchAsync(
     async (req, res) => {
         const id = req.params.id;
         const result = await getSingleAcademicDepartmentService(id);
+        if (!result)
+            throw new AppError(
+                httpStatus.NOT_FOUND,
+                "academic department are not found",
+            );
         sendResponse(res, {
             success: true,
-            message: "new academic department created successfully ",
+            message: "fetch a single academic department",
             statusCode: httpStatus.CREATED,
             data: result,
         });
@@ -58,7 +64,7 @@ export const updateAcademicDepartmentController = catchAsync(
         );
         sendResponse(res, {
             success: true,
-            message: "new academic department created successfully ",
+            message: "update academic department are successful",
             statusCode: httpStatus.CREATED,
             data: result,
         });

@@ -1,12 +1,10 @@
 import { Router } from "express";
-import checkValidation from "../../middleware/checkValidation";
 import {
     deleteStudentController,
     getAllStudentController,
     getSingleStudentController,
     updateStudentController,
 } from "./student.controller";
-import { updateStudentValidationSchema } from "./student.validation";
 
 const studentRoutes = Router();
 
@@ -19,7 +17,7 @@ studentRoutes.get("/:id", getSingleStudentController);
 // update a single student route
 studentRoutes.patch(
     "/:id",
-    checkValidation(updateStudentValidationSchema),
+    // checkValidation(updateStudentValidationSchema),
     updateStudentController,
 );
 
