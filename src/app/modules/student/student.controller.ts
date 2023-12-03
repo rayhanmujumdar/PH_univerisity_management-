@@ -2,6 +2,7 @@ import httpStatus from "http-status";
 import catchAsync from "../../lib/catchAsync";
 import sendResponse from "../../lib/sendResponse";
 import {
+    deleteStudentService,
     getAllStudentService,
     getSingleStudentService,
     updateStudentService,
@@ -22,7 +23,7 @@ export const getAllStudentController = catchAsync(async (req, res) => {
 export const getSingleStudentController = catchAsync(async (req, res) => {
     const id = req.params.id;
     const result = await getSingleStudentService(id);
-    
+
     sendResponse(res, {
         success: true,
         statusCode: httpStatus.OK,
@@ -40,6 +41,18 @@ export const updateStudentController = catchAsync(async (req, res) => {
         success: true,
         statusCode: httpStatus.OK,
         message: "Student updated successfully",
+        data: result,
+    });
+});
+
+// delete student controller
+export const deleteStudentController = catchAsync(async (req, res) => {
+    const id = req.params.id;
+    const result = await deleteStudentService(id);
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "student deleted successfully ",
         data: result,
     });
 });

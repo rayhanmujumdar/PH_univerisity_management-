@@ -1,6 +1,7 @@
 import { Router } from "express";
 import checkValidation from "../../middleware/checkValidation";
 import {
+    deleteStudentController,
     getAllStudentController,
     getSingleStudentController,
     updateStudentController,
@@ -21,5 +22,8 @@ studentRoutes.patch(
     checkValidation(updateStudentValidationSchema),
     updateStudentController,
 );
+
+// this route hit to you can delete a student by id
+studentRoutes.delete("/:id", deleteStudentController);
 
 export default studentRoutes;
