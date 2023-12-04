@@ -4,6 +4,7 @@ import httpStatus from "http-status";
 import { ZodError } from "zod";
 import config from "../config";
 import { TErrorSource } from "../interface/error";
+import handleValidationError from "./handleValidationError";
 import handleZodError from "./handleZodError";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -35,11 +36,17 @@ export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
         statusCode = zodError.statusCode;
         errorSource = zodError.errorSource;
     }
+    if (error.name === "ValidationError") {
+        const mongooseValidationError = handleValidationError(error);
+        message = mongooseValidationError.message;
+        statusCode = mongooseValidationError.statusCode;
+        errorSource = mongooseValidationError.errorSource;
+    }
     // send error response to client
     return res.status(statusCode).json({
         success: false,
         message,
         errorSource: errorSource,
-        stack: config.NODE_ENV === "development" ? error.stack : null,
+        stack: config.NODE_ENV === "development" ? error?.stack : null,
     });
 };

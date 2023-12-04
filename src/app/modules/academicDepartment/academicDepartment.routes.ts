@@ -16,7 +16,7 @@ const academicDepartmentRoutes = Router();
 // create academic department route
 academicDepartmentRoutes.post(
     "/create-academic-department",
-    checkValidation(createAcademicDepartmentValidation),
+    // checkValidation(createAcademicDepartmentValidation),
     createAcademicDepartmentController,
 );
 // get all academic department route
