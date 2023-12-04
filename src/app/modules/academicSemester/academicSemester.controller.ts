@@ -7,7 +7,7 @@ import {
     getSingleAcademicSemesterService,
     updateASingleAcademicSemesterService,
 } from "./academicSemester.services";
-import error from "../../lib/error";
+import error from "../../ErrorBoundary/error";
 
 // create new academic semester
 export const createAcademicSemesterController = catchAsync(async (req, res) => {

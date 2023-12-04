@@ -1,6 +1,6 @@
 import httpStatus from "http-status";
 import catchAsync from "../../lib/catchAsync";
-import { AppError } from "../../lib/error";
+import { AppError } from "../../ErrorBoundary/error";
 import sendResponse from "../../lib/sendResponse";
 import {
     createAcademicDepartmentService,

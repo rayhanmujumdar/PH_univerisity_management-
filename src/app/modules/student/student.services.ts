@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from "http-status";
 import mongoose from "mongoose";
-import error, { AppError } from "../../lib/error";
+import error, { AppError } from "../../ErrorBoundary/error";
 import { User } from "../user/user.model";
 import { TStudent } from "./student.interface";
 import { Student } from "./student.model";

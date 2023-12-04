@@ -2,7 +2,7 @@
 import httpStatus from "http-status";
 import mongoose from "mongoose";
 import config from "../../config";
-import error, { AppError } from "../../lib/error";
+import error, { AppError } from "../../ErrorBoundary/error";
 import AcademicSemester from "../academicSemester/academicSemester.model";
 import { TStudent } from "../student/student.interface";
 import { Student } from "../student/student.model";

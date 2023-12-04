@@ -1,4 +1,4 @@
-import error from "../../lib/error";
+import error from "../../ErrorBoundary/error";
 import { semesterCodeAndNameMatchMapping } from "./academicSemester.constant";
 import { TAcademicSemester } from "./academicSemester.interface";
 import AcademicSemester from "./academicSemester.model";

@@ -4,7 +4,7 @@ import {
     academicSemesterName,
     months,
 } from "./academicSemester.constant";
-import error from "../../lib/error";
+import error from "../../ErrorBoundary/error";
 import { TAcademicSemester } from "./academicSemester.interface";
 
 const academicSemesterSchema = new Schema<TAcademicSemester>(

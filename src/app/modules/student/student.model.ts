@@ -1,6 +1,6 @@
 import httpStatus from "http-status";
 import { Schema, model } from "mongoose";
-import error from "../../lib/error";
+import error from "../../ErrorBoundary/error";
 import {
     TGuardian,
     TLocalGuardian,
