@@ -6,10 +6,7 @@ import {
     getSingleAcademicDepartmentController,
     updateAcademicDepartmentController,
 } from "./academicDepartment.controller";
-import {
-    createAcademicDepartmentValidation,
-    updateAcademicDepartmentValidation,
-} from "./academicDepartment.validation";
+import { updateAcademicDepartmentValidation } from "./academicDepartment.validation";
 
 const academicDepartmentRoutes = Router();
 

@@ -4,6 +4,8 @@ import httpStatus from "http-status";
 import { ZodError } from "zod";
 import config from "../config";
 import { TErrorSource } from "../interface/error";
+import handleCastError from "./handleCastError";
+import handleDuplicateError from "./handleDuplicateError";
 import handleValidationError from "./handleValidationError";
 import handleZodError from "./handleZodError";
 
@@ -41,12 +43,22 @@ export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
         message = mongooseValidationError.message;
         statusCode = mongooseValidationError.statusCode;
         errorSource = mongooseValidationError.errorSource;
+    } else if (error.name === "CastError") {
+        const castError = handleCastError(error);
+        message = castError.message;
+        statusCode = castError.statusCode;
+        errorSource = castError.errorSource;
+    } else if (error.code === 11000) {
+        const duplicateError = handleDuplicateError(error);
+        message = duplicateError.message;
+        statusCode = duplicateError.statusCode;
+        errorSource = duplicateError.errorSource;
     }
     // send error response to client
     return res.status(statusCode).json({
         success: false,
         message,
-        errorSource: errorSource,
+        errorSource,
         stack: config.NODE_ENV === "development" ? error?.stack : null,
     });
 };
