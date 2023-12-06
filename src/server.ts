@@ -1,6 +1,6 @@
 import http from "http";
-import app from "./app/app";
 import mongoose from "mongoose";
+import app from "./app/app";
 import config from "./app/config";
 
 const server = http.createServer(app);
@@ -14,4 +14,19 @@ databaseReboot(config.database_url as string).then(() => {
         // eslint-disable-next-line no-console
         console.log(`Server listening port is ${config.port}`);
     });
+});
+
+process.on("unhandledRejection", () => {
+    console.log("UnhandledPromiseRejection is detected,shutdown ...");
+    if (server) {
+        server.close(() => {
+            process.exit(1);
+        });
+    }
+    process.exit(1);
+});
+
+process.on("uncaughtException", () => {
+    console.log("uncaughtException is detected,shutdown ...");
+    process.exit(1);
 });

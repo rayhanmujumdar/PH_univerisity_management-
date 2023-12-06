@@ -15,6 +15,7 @@ app.use(morgan("dev"));
 
 // health route
 app.get("/health", (_req: Request, res: Response) => {
+    Promise.reject()
     res.status(200).json({
         success: true,
         message: "app router health is good",

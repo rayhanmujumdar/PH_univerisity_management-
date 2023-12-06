@@ -4,6 +4,7 @@ import httpStatus from "http-status";
 import { ZodError } from "zod";
 import config from "../config";
 import { TErrorSource } from "../interface/error";
+import { AppError } from "./error";
 import handleCastError from "./handleCastError";
 import handleDuplicateError from "./handleDuplicateError";
 import handleValidationError from "./handleValidationError";
@@ -28,7 +29,7 @@ export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
     let errorSource: TErrorSource[] = [
         {
             path: "",
-            message: "Something went wrong",
+            message: error.message,
         },
     ];
     // check zod error instance
@@ -53,6 +54,15 @@ export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
         message = duplicateError.message;
         statusCode = duplicateError.statusCode;
         errorSource = duplicateError.errorSource;
+    } else if (error instanceof AppError) {
+        message = error.message;
+        statusCode = error.statusCode;
+        errorSource = [
+            {
+                path: "",
+                message: error.message,
+            },
+        ];
     }
     // send error response to client
     return res.status(statusCode).json({

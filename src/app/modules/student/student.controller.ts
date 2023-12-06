@@ -10,7 +10,7 @@ import {
 
 // get all student controller
 export const getAllStudentController = catchAsync(async (req, res) => {
-    const result = await getAllStudentService();
+    const result = await getAllStudentService(req.query );
     sendResponse(res, {
         success: true,
         statusCode: httpStatus.OK,

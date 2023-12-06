@@ -7,8 +7,35 @@ import { TStudent } from "./student.interface";
 import { Student } from "./student.model";
 
 // get all student service
-export const getAllStudentService = () => {
-    return Student.find()
+export const getAllStudentService = (query: Record<string, unknown>) => {
+    const queryObj = { ...query };
+    const studentSearchableField = [
+        "email",
+        "name.firstName",
+        "presentAddress",
+    ];
+    let searchQuery = "";
+    if (query?.searchTerm && !query?.email) {
+        searchQuery = query?.searchTerm as string;
+    }
+    /* mapping output is like is:
+        {email: {regex: 'rayhan@gmail.com, options: 'i'}}
+        {'name.firstName': {regex: 'rayhan', options: 'i'}}
+        {presentAddress: {regex: 'dhaka', options: 'i'}}
+    */
+    const searchQueryStudent = Student.find({
+        $or: studentSearchableField.map((field) => {
+            return { [field]: { $regex: searchQuery, $options: "i" } };
+        }),
+    });
+
+    // filter
+    const excludeField = ["searchTerm", "sort", "limit", "page", "fields"];
+    excludeField.forEach((el) => {
+        delete queryObj[el];
+    });
+    const filteringWithEmail = searchQueryStudent
+        .find(queryObj)
         .populate("academicSemester")
         .populate({
             path: "academicDepartment",
@@ -16,6 +43,32 @@ export const getAllStudentService = () => {
                 path: "academicFacultyId",
             },
         });
+    // sorting
+    let sort = "-createdAt";
+    if (query?.sort) {
+        sort = query.sort as string;
+    }
+    const sortedStudent = filteringWithEmail.sort(sort);
+    // limit or pagination
+    let limit = 0;
+    if (query?.limit) {
+        limit = Number(query.limit);
+    }
+    let page = 1;
+    let skip = 0;
+    if (query?.page) {
+        page = Number(query.page);
+        skip = (page - 1) * limit;
+    }
+    const skipQuery = sortedStudent.skip(skip);
+    const limitQuery = skipQuery.limit(limit);
+    // fields filtering
+    let fields = "-__v";
+    if (query?.fields) {
+        fields = (query?.fields as string).split(",").join(" ");
+    }
+    const fieldsQuery = limitQuery.select(fields);
+    return fieldsQuery;
 };
 
 // get single student service
