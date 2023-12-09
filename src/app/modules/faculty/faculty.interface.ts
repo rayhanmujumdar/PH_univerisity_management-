@@ -1,0 +1,21 @@
+import { Types } from "mongoose";
+import { TGender, TUserName } from "../student/student.interface";
+export type TFaculty = {
+    id: string;
+    userId: Types.ObjectId;
+    name: TUserName;
+    age: number;
+    gender: TGender;
+    designation: string;
+    dateOfBirth: string;
+    email: string;
+    contactNo: string;
+    emergencyContactNo: string;
+    presentAddress: string;
+    permanentAddress: string;
+    department: string;
+    academicFaculty: Types.ObjectId;
+    academicDepartment: Types.ObjectId;
+    profileImg: string;
+    isDeleted: boolean;
+};

@@ -10,7 +10,15 @@ import { Student } from "./student.model";
 
 // get all student service
 export const getAllStudentService = (query: Record<string, unknown>) => {
-    const studentQuery = new QueryBuilder<TStudent>(Student.find(), query)
+    const studentQuery = new QueryBuilder<TStudent>(
+        Student.find()
+            .populate("academicSemester")
+            .populate({
+                path: "academicDepartment",
+                populate: { path: "academicFacultyId" },
+            }),
+        query,
+    )
         .search(studentSearchableField)
         .filter()
         .sort()

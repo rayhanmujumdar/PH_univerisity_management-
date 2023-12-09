@@ -27,7 +27,8 @@ export default class QueryBuilder<T> {
         return this;
     }
     sort() {
-        const sortedFieldName = (this.query?.sort as string) || "-createdAt";
+        const sortItem = (this.query?.sort as string) || "-createdAt";
+        const sortedFieldName = sortItem.split(",").join(" ");
         this.modelQuery = this.modelQuery.sort(sortedFieldName);
         return this;
     }
