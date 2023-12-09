@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Query, Schema, model } from "mongoose";
 import { userNameSchema } from "../student/student.model";
 import { TFaculty } from "./faculty.interface";
 
@@ -9,7 +9,7 @@ export const facultySchema = new Schema<TFaculty>(
             required: [true, "id must be required"],
         },
         userId: {
-            type: String,
+            type: Schema.Types.ObjectId,
             required: [true, "userId must be required"],
         },
         name: userNameSchema,
@@ -75,6 +75,12 @@ export const facultySchema = new Schema<TFaculty>(
     },
 );
 
-const Faculty = model("Faculty", facultySchema);
+// check deleted faculty
+facultySchema.pre(/^find/, function (this: Query<TFaculty, Document>, next) {
+    this.find({ isDeleted: { $ne: true } });
+    next();
+});
+
+const Faculty = model<TFaculty>("Faculty", facultySchema);
 
 export default Faculty;

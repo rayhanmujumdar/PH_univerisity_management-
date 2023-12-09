@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { userNameValidationSchema } from "../student/student.validation";
+import { updateUserNameValidationSchema, userNameValidationSchema } from "../student/student.validation";
 
 export const createFacultyValidationSchema = z.object({
     body: z.object({
@@ -64,9 +64,10 @@ export const createFacultyValidationSchema = z.object({
     }),
 });
 
+//
 export const updateFacultyValidationSchema = z.object({
     body: z.object({
-        name: userNameValidationSchema.optional(),
+        name: updateUserNameValidationSchema.optional(),
         gender: z
             .enum(["male", "female", "other"], {
                 required_error: "gender must be required",

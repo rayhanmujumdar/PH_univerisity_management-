@@ -12,8 +12,8 @@ import { TUser } from "./user.interface";
 import { User } from "./user.model";
 import {
     duplicateEmailCheck,
-    generateUserId,
     generateStudentId,
+    generateUserId,
 } from "./user.utilis";
 
 export const createStudentIntoDB = async (
@@ -35,7 +35,10 @@ export const createStudentIntoDB = async (
         userData.password = password
             ? password
             : (config.default_password as string);
-        const isExistEmailIntoDB = await duplicateEmailCheck(studentData.email);
+        const isExistEmailIntoDB = await duplicateEmailCheck<TStudent>(
+            studentData.email,
+            Student.find(),
+        );
         if (isExistEmailIntoDB) {
             throw error(500, "Email already exist");
         }
@@ -82,12 +85,20 @@ export const createFacultyIntoDB = async (
         }
         faculty.id = newUser[0].id;
         faculty.userId = newUser[0]._id;
+        const isExistEmailIntoDB = await duplicateEmailCheck<TStudent>(
+            faculty?.email,
+            Faculty.find(),
+        );
+        if (isExistEmailIntoDB) {
+            throw error(500, "Email already exist");
+        }
         const [newFaculty] = await Faculty.create([faculty], { session });
         await session.commitTransaction();
         await session.endSession();
         return newFaculty;
-    } catch (err) {
+    } catch (err: any) {
         await session.abortTransaction();
         await session.endSession();
+        throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, err.message);
     }
 };

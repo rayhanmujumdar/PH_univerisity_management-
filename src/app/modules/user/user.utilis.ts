@@ -1,13 +1,15 @@
+import { Query } from "mongoose";
 import { TAcademicSemester } from "../academicSemester/academicSemester.interface";
-import { Student } from "../student/student.model";
 import { TRole } from "./user.interface";
 import { User } from "./user.model";
 
-export const duplicateEmailCheck = async (email: string = "") => {
-    const existedEmail = await Student.findOne(
-        { email },
-        { email: 1, _id: 0 },
-    ).lean();
+export const duplicateEmailCheck = async <T>(
+    email: string = "",
+    model: Query<T[], T>,
+) => {
+    const existedEmail = await model
+        .findOne({ email }, { email: 1, _id: 0 })
+        .lean();
     return existedEmail ? true : false;
 };
 

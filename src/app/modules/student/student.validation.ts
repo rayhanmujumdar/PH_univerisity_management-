@@ -11,6 +11,21 @@ export const userNameValidationSchema = z.object({
         }),
     lastName: z.string({ required_error: "lastName must be required" }).trim(),
 });
+export const updateUserNameValidationSchema = z.object({
+    firstName: z
+        .string({ required_error: "firstName must be required" })
+        // .min(6, { message: "firstName more then 6 characters" })
+        .max(20, { message: "firstName less then 20 characters" })
+        .trim()
+        .regex(new RegExp("[A-Z][a-z]*"), {
+            message: "firstName must be capitalize",
+        })
+        .optional(),
+    lastName: z
+        .string({ required_error: "lastName must be required" })
+        .trim()
+        .optional(),
+});
 
 export const guardianValidationSchema = z.object({
     name: z.string({ required_error: "name must be required" }).trim(),
@@ -111,7 +126,7 @@ export const createStudentValidationSchema = z.object({
 
 export const updateStudentValidationSchema = z.object({
     body: z.object({
-        name: userNameValidationSchema.optional(),
+        name: updateUserNameValidationSchema.optional(),
         gender: z
             .enum(["male", "female", "other"], {
                 required_error: "gender must be required",
