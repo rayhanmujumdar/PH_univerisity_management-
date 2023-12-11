@@ -2,10 +2,13 @@ import httpStatus from "http-status";
 import catchAsync from "../../lib/catchAsync";
 import sendResponse from "../../lib/sendResponse";
 import {
+    assignCourseWithFacultyService,
     createCourseService,
     deleteCourseService,
     getASingleCourseService,
     getAllCourseService,
+    removeCourseWithFacultyService,
+    updateCourseService,
 } from "./course.services";
 
 export const createCourseController = catchAsync(async (req, res) => {
@@ -42,7 +45,8 @@ export const getSingleCourseController = catchAsync(async (req, res) => {
 });
 export const updateCourseController = catchAsync(async (req, res) => {
     const id = req.params.id;
-    const result = await getASingleCourseService(id);
+    const courseData = req.body;
+    const result = await updateCourseService(id, courseData);
     sendResponse(res, {
         success: true,
         statusCode: httpStatus.OK,
@@ -50,6 +54,43 @@ export const updateCourseController = catchAsync(async (req, res) => {
         data: result,
     });
 });
+
+// assign new course faculty
+
+export const assignCourseWithFacultyController = catchAsync(
+    async (req, res) => {
+        const { courseId } = req.params;
+        const { faculties } = req.body;
+        const result = await assignCourseWithFacultyService(
+            courseId,
+            faculties,
+        );
+        sendResponse(res, {
+            success: true,
+            statusCode: httpStatus.OK,
+            message: "faculties updated successfully",
+            data: result,
+        });
+    },
+);
+
+// remove course faculty into course
+export const removeCourseWithFacultyController = catchAsync(
+    async (req, res) => {
+        const { courseId } = req.params;
+        const { faculties } = req.body;
+        const result = await removeCourseWithFacultyService(
+            courseId,
+            faculties,
+        );
+        sendResponse(res, {
+            success: true,
+            statusCode: httpStatus.OK,
+            message: "faculties updated successfully",
+            data: result,
+        });
+    },
+);
 
 export const deleteCourseController = catchAsync(async (req, res) => {
     const id = req.params.id;
