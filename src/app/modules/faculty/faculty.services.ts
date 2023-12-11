@@ -31,7 +31,7 @@ export const getAllFacultyService = async (query: Record<string, unknown>) => {
 
 // get single faculty
 export const getSingleFacultyService = (id: string) => {
-    return Faculty.findOne({ id });
+    return Faculty.findById(id);
 };
 
 // update a single faculty
@@ -46,7 +46,7 @@ export const updateFacultyService = (
             facultyUpdatedData[`name.${key}`] = val;
         });
     }
-    return Faculty.findOneAndUpdate({ id }, facultyUpdatedData, { new: true });
+    return Faculty.findByIdAndUpdate(id, facultyUpdatedData, { new: true });
 };
 
 // delete faculty
@@ -68,7 +68,7 @@ export const deleteFacultyService = async (id: string) => {
             );
         }
         const deletedFaculty = await Faculty.updateOne(
-            { id },
+            { _id: id },
             { isDeleted: true },
         );
         if (!deletedFaculty.modifiedCount && !deletedFaculty.matchedCount) {

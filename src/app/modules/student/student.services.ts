@@ -91,7 +91,7 @@ export const getAllStudentService = (query: Record<string, unknown>) => {
 
 // get single student service
 export const getSingleStudentService = async (id: string) => {
-    const student = await Student.findOne({ id })
+    const student = await Student.findById(id)
         .populate("academicSemester")
         .populate({
             path: "academicDepartment",
@@ -127,7 +127,7 @@ export const updateStudentService = (
             modifyUpdatedData[`localGuardian.${key}`] = value;
         }
     }
-    return Student.findOneAndUpdate({ id }, modifyUpdatedData, {
+    return Student.findByIdAndUpdate(id, modifyUpdatedData, {
         new: true,
         runValidators: true,
     });
@@ -137,29 +137,29 @@ export const deleteStudentService = async (id: string) => {
     const session = await mongoose.startSession();
     try {
         session.startTransaction();
-        const isUserDeleted = await User.findOneAndUpdate(
-            { id },
+        const userDeleted = await User.findByIdAndUpdate(
+            id,
             { isDeleted: true },
             { new: true, session },
         );
-        if (!isUserDeleted)
+        if (!userDeleted)
             throw new AppError(
                 httpStatus.BAD_REQUEST,
                 "student was deleted failed",
             );
-        const isStudentDeleted = await Student.findOneAndUpdate(
-            { id },
+        const studentDeleted = await Student.findOneAndUpdate(
+            { userId: id },
             { isDeleted: true },
             { new: true, session },
         );
-        if (!isStudentDeleted)
+        if (!studentDeleted)
             throw new AppError(
                 httpStatus.BAD_REQUEST,
                 "student was deleted failed",
             );
         await session.commitTransaction();
         await session.endSession();
-        return isStudentDeleted;
+        return studentDeleted;
     } catch (err: any) {
         await session.abortTransaction();
         await session.endSession();

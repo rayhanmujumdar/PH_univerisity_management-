@@ -32,7 +32,7 @@ export const getSingleFacultyController = catchAsync(async (req, res) => {
 });
 // update single faculty controller
 export const updateFacultyController = catchAsync(async (req, res) => {
-    const id = req.params.id;
+    const id = req.params?.id;
     const facultyData = req.body;
     const result = await updateFacultyService(id, facultyData);
     sendResponse(res, {
@@ -44,7 +44,7 @@ export const updateFacultyController = catchAsync(async (req, res) => {
 });
 // delete single faculty controller
 export const deleteFacultyController = catchAsync(async (req, res) => {
-    const id = req.params.id;
+    const id = req.params?.id;
     const result = await deleteFacultyService(id);
     sendResponse(res, {
         success: true,

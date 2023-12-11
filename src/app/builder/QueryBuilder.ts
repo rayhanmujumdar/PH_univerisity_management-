@@ -11,7 +11,10 @@ export default class QueryBuilder<T> {
         this.modelQuery = this.modelQuery.find({
             $or: searchAbleField.map((field: string) => {
                 return {
-                    [field]: { $regex: searchQuery, $options: "i" },
+                    [field]: {
+                        $regex: searchQuery,
+                        $options: "i",
+                    },
                 };
             }),
         } as FilterQuery<T>);
