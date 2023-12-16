@@ -28,9 +28,11 @@ export const semesterRegistration = new Schema<TSemesterRegistration>({
     minCredit: {
         type: Number,
         default: 3,
+        min: [3, "minimum three credits required"],
     },
     maxCredit: {
         type: Number,
+        max: [16, "maximum you provide 16 credits"],
     },
 });
 

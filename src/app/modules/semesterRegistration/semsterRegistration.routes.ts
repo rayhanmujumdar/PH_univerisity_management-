@@ -14,7 +14,7 @@ import {
 
 const semesterRegistrationRoutes = Router();
 // create a semester registration route
-semesterRegistrationRoutes.get(
+semesterRegistrationRoutes.post(
     "/create-semester-registration",
     checkValidation(createSemesterRegistrationValidationSchema),
     createSemesterRegistrationController,

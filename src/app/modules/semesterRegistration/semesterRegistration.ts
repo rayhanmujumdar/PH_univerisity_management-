@@ -24,7 +24,7 @@ export const createSemesterRegistrationService = async (
             "academic semester is not exist",
         );
     }
-    return AcademicSemester.create(payload);
+    return SemesterRegistration.create(payload);
 };
 
 // get all semester registration service
@@ -32,7 +32,7 @@ export const getAllSemesterRegistrationService = (
     query: Record<string, unknown>,
 ) => {
     const registrationSemester = new QueryBuilder(
-        SemesterRegistration.find(),
+        SemesterRegistration.find().populate("academicSemester"),
         query,
     )
         .sort()
@@ -45,5 +45,5 @@ export const getAllSemesterRegistrationService = (
 
 // get a single registration semester service
 export const getSingleSemesterRegistrationService = (id: string) => {
-    return SemesterRegistration.findById(id);
+    return SemesterRegistration.findById(id).populate("academicSemester");
 };
