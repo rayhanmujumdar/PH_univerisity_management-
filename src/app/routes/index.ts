@@ -40,6 +40,10 @@ const moduleRoutes: TRouter[] = [
         path: "/course",
         route: courseRoutes,
     },
+    {
+        path: "/semester-registration",
+        route: courseRoutes,
+    },
 ];
 moduleRoutes.forEach((router) => rootRoutes.use(router.path, router.route));
 
