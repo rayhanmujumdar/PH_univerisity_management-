@@ -4,6 +4,7 @@ import academicFacultyRoutes from "../modules/academicFaculty/academicFaculty.ro
 import { academicSemesterRoutes } from "../modules/academicSemester/academicSemester.routes";
 import courseRoutes from "../modules/course/course.routes";
 import facultyRoutes from "../modules/faculty/faculty.routes";
+import offeredCourseRoutes from "../modules/offeredCourse/offeredCourse.routes";
 import semesterRegistrationRoutes from "../modules/semesterRegistration/semsterRegistration.routes";
 import studentRoutes from "../modules/student/student.routes";
 import { userRouter } from "../modules/user/user.routes";
@@ -44,6 +45,10 @@ const moduleRoutes: TRouter[] = [
     {
         path: "/semester-registration",
         route: semesterRegistrationRoutes,
+    },
+    {
+        path: "/offered-courses",
+        route: offeredCourseRoutes,
     },
 ];
 moduleRoutes.forEach((router) => rootRoutes.use(router.path, router.route));
