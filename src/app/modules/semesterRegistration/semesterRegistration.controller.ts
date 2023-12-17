@@ -5,6 +5,7 @@ import {
     createSemesterRegistrationService,
     getAllSemesterRegistrationService,
     getSingleSemesterRegistrationService,
+    updateSemesterRegistrationService,
 } from "./semesterRegistration";
 // create semester registration controller
 export const createSemesterRegistrationController = catchAsync(
@@ -50,6 +51,21 @@ export const getSingleSemesterRegistrationController = catchAsync(
     },
 );
 // update a single semester registration by id controller
-export const updateSemesterRegistrationController = catchAsync(async () => {});
+export const updateSemesterRegistrationController = catchAsync(
+    async (req, res) => {
+        const { id } = req.params;
+        const registrationSemesterData = req.body;
+        const result = await updateSemesterRegistrationService(
+            id,
+            registrationSemesterData,
+        );
+        sendResponse(res, {
+            success: true,
+            statusCode: httpStatus.CREATED,
+            message: "Semester Registration retrieved successfully",
+            data: result,
+        });
+    },
+);
 // delete a single semester registration by id controller
 export const deleteSemesterRegistrationController = catchAsync(async () => {});
