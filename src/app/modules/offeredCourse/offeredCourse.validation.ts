@@ -1,6 +1,20 @@
 import { z } from "zod";
 import { Days } from "./offeredCourse.constant";
 
+const timeValidation = z
+    .string({
+        required_error: "endTime must be required",
+    })
+    .refine(
+        (time) => {
+            const regex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+            return regex.test(time);
+        },
+        {
+            message: "Invalid endTime, your time format must be HH:MM type",
+        },
+    );
+
 export const createOfferedCourseValidationSchema = z.object({
     body: z
         .object({
@@ -27,34 +41,8 @@ export const createOfferedCourseValidationSchema = z.object({
             }),
             section: z.number({ required_error: "section must be required" }),
             days: z.enum([...Days] as [string, ...string[]]),
-            startTime: z
-                .string({
-                    required_error: "startTime must be required",
-                })
-                .refine(
-                    (time) => {
-                        const regex = /^([01]\d|2[0-3]):([0-5]\d)$/;
-                        return regex.test(time);
-                    },
-                    {
-                        message:
-                            "Invalid startTime, your time format must be HH:MM type",
-                    },
-                ),
-            endTime: z
-                .string({
-                    required_error: "endTime must be required",
-                })
-                .refine(
-                    (time) => {
-                        const regex = /^([01]\d|2[0-3]):([0-5]\d)$/;
-                        return regex.test(time);
-                    },
-                    {
-                        message:
-                            "Invalid endTime, your time format must be HH:MM type",
-                    },
-                ),
+            startTime: timeValidation,
+            endTime: timeValidation,
         })
         .refine(
             (body) => {
@@ -71,44 +59,24 @@ export const createOfferedCourseValidationSchema = z.object({
 export const updateOfferedCourseValidationSchema = z.object({
     body: z
         .object({
-            faculty: z
-                .string({
-                    required_error: "faculty must be required",
-                })
-                .optional(),
-            maxCapacity: z
-                .number({ required_error: "maxCapacity must be required" })
-                .optional(),
+            faculty: z.string({
+                required_error: "faculty must be required",
+            }),
+            maxCapacity: z.number({
+                required_error: "maxCapacity must be required",
+            }),
             days: z.enum([...Days] as [string, ...string[]]).optional(),
-            startTime: z
-                .string({
-                    required_error: "startTime must be required",
-                })
-                .refine(
-                    (time) => {
-                        const regex = /^([01]\d|2[0-3]):([0-5]\d)$/;
-                        return regex.test(time);
-                    },
-                    {
-                        message:
-                            "Invalid startTime, your time format must be HH:MM type",
-                    },
-                )
-                .optional(),
-            endTime: z
-                .string({
-                    required_error: "endTime must be required",
-                })
-                .refine(
-                    (time) => {
-                        const regex = /^([01]\d|2[0-3]):([0-5]\d)$/;
-                        return regex.test(time);
-                    },
-                    {
-                        message:
-                            "Invalid endTime, your time format must be HH:MM type",
-                    },
-                ),
+            startTime: timeValidation,
+            endTime: timeValidation,
         })
-        .optional(),
+        .refine(
+            (body) => {
+                const start = new Date(`1970-01-01T${body.startTime}:00`);
+                const end = new Date(`1970-01-01T${body.endTime}:00`);
+                return end > start;
+            },
+            {
+                message: "start time should be before end time!",
+            },
+        ),
 });

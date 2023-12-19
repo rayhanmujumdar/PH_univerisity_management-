@@ -14,3 +14,14 @@ export type TOfferedCorse = {
     startTime: string;
     endTime: string;
 };
+
+export type TSchedule = {
+    days: TDays;
+    startTime: string;
+    endTime: string;
+};
+
+export type TUpdateOfferedCourse = Pick<
+    TOfferedCorse,
+    "faculty" | "days" | "startTime" | "endTime" | "maxCapacity"
+>;
