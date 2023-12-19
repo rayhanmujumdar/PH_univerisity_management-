@@ -3,10 +3,11 @@ import catchAsync from "../../lib/catchAsync";
 import sendResponse from "../../lib/sendResponse";
 import {
     createSemesterRegistrationService,
+    deleteSemesterRegistrationService,
     getAllSemesterRegistrationService,
     getSingleSemesterRegistrationService,
     updateSemesterRegistrationService,
-} from "./semesterRegistration";
+} from "./semesterRegistration.services";
 // create semester registration controller
 export const createSemesterRegistrationController = catchAsync(
     async (req, res) => {
@@ -62,10 +63,21 @@ export const updateSemesterRegistrationController = catchAsync(
         sendResponse(res, {
             success: true,
             statusCode: httpStatus.CREATED,
-            message: "Semester Registration retrieved successfully",
+            message: "Semester Registration updated successfully",
             data: result,
         });
     },
 );
 // delete a single semester registration by id controller
-export const deleteSemesterRegistrationController = catchAsync(async () => {});
+export const deleteSemesterRegistrationController = catchAsync(
+    async (req, res) => {
+        const { id } = req.params;
+        const result = await deleteSemesterRegistrationService(id);
+        sendResponse(res, {
+            success: true,
+            statusCode: httpStatus.CREATED,
+            message: "Semester Registration deleted successfully",
+            data: result,
+        });
+    },
+);

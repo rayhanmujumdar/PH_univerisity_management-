@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from "http-status";
+import mongoose from "mongoose";
 import { AppError } from "../../ErrorBoundary/error";
 import QueryBuilder from "../../builder/QueryBuilder";
 import AcademicSemester from "../academicSemester/academicSemester.model";
+import OfferCourse from "../offeredCourse/offeredCourse.model";
 import { registrationStatus } from "./semesterRegistration.constant";
 import { TSemesterRegistration } from "./semesterRegistration.interface";
 import SemesterRegistration from "./semesterRegistration.model";
@@ -113,4 +116,51 @@ export const updateSemesterRegistrationService = async (
         },
         { new: true, runValidators: true },
     );
+};
+
+// delete semester registration
+export const deleteSemesterRegistrationService = async (id: string) => {
+    const session = await mongoose.startSession();
+    try {
+        session.startTransaction();
+        const semesterRegistration = await SemesterRegistration.findById(id);
+        if (!semesterRegistration) {
+            throw new AppError(
+                httpStatus.BAD_GATEWAY,
+                "semester registration is not found",
+            );
+        }
+        if (semesterRegistration?.status !== "UPCOMING") {
+            throw new AppError(
+                httpStatus.BAD_GATEWAY,
+                "This semester already running you can't delete",
+            );
+        }
+        const semesterRegistrationFromOfferedCourse =
+            await OfferCourse.find().select("_id semesterRegistration");
+        const offeredCourseId = [];
+        for (const course of semesterRegistrationFromOfferedCourse) {
+            if (course.semesterRegistration.toString() === id) {
+                offeredCourseId.push(course._id.toString());
+            }
+        }
+        await OfferCourse.deleteMany(
+            {
+                _id: { $in: offeredCourseId },
+            },
+            { session },
+        );
+        const result = await SemesterRegistration.findByIdAndDelete(id, {
+            session,
+            new: true,
+        });
+        // set data into data base and session completed
+        await session.commitTransaction();
+        await session.endSession();
+        return result;
+    } catch (err: any) {
+        await session.abortTransaction();
+        await session.endSession();
+        throw new AppError(httpStatus.BAD_REQUEST, err.message);
+    }
 };

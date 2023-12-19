@@ -2,6 +2,7 @@ import { Router } from "express";
 import checkValidation from "../../middleware/checkValidation";
 import {
     createOfferedCourseController,
+    getAllOfferedCourseController,
     updateOfferedCourseController,
 } from "./offeredCourse.controller";
 import {
@@ -17,6 +18,10 @@ offeredCourseRoutes.post(
     checkValidation(createOfferedCourseValidationSchema),
     createOfferedCourseController,
 );
+
+// get all offered course route
+offeredCourseRoutes.get("/", getAllOfferedCourseController);
+
 // update a offered course route
 offeredCourseRoutes.patch(
     "/:id",

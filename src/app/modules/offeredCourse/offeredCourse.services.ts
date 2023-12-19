@@ -1,5 +1,6 @@
 import httpStatus from "http-status";
 import { AppError } from "../../ErrorBoundary/error";
+import QueryBuilder from "../../builder/QueryBuilder";
 import AcademicDepartment from "../academicDepartment/academicDepartment.model";
 import AcademicFaculty from "../academicFaculty/academicFaculty.model";
 import AcademicSemester from "../academicSemester/academicSemester.model";
@@ -103,6 +104,26 @@ export const createOfferedCourseService = async (payload: TOfferedCorse) => {
         );
     }
     return OfferCourse.create({ ...payload, academicSemester });
+};
+
+// get all offered course service
+export const getAllOfferedCourseService = (query: Record<string, unknown>) => {
+    const offeredCourse = new QueryBuilder(
+        OfferCourse.find()
+            .populate("semesterRegistration")
+            .populate("academicDepartment")
+            .populate("academicFaculty")
+            .populate("academicSemester")
+            .populate("course")
+            .populate("faculty"),
+        query,
+    )
+        .search(["days", "startTime", "endTime"])
+        .sort()
+        .skip()
+        .limit()
+        .fields();
+    return offeredCourse.modelQuery.select("-__v -createdAt -updatedAt");
 };
 
 // update offered course service
