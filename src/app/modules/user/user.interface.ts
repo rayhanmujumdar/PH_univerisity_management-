@@ -1,4 +1,5 @@
 import { Model } from "mongoose";
+import { USER_ROLE } from "./user.constant";
 
 export type TRole = "student" | "faculty" | "admin";
 export type TUser = {
@@ -12,8 +13,11 @@ export type TUser = {
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface UserModel extends Model<TUser> {
+    isUserExistByCustomId(id: string): Promise<TUser>;
     isPasswordMatch(
         plainPassword: string,
         hashPassword: string,
     ): Promise<boolean>;
 }
+
+export type TUser_Role = keyof typeof USER_ROLE;

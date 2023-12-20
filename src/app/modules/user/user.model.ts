@@ -55,4 +55,11 @@ userSchema.statics.isPasswordMatch = async function (
     return bcrypt.compare(plainPassword, hashPassword);
 };
 
+// user existing check static method
+userSchema.statics.isUserExistByCustomId = function (id: string) {
+    return this.findOne({
+        id,
+    });
+};
+
 export const User = model<TUser, UserModel>("User", userSchema);
