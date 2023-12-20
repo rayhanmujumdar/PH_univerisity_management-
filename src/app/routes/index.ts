@@ -2,6 +2,7 @@ import { Router } from "express";
 import academicDepartmentRoutes from "../modules/academicDepartment/academicDepartment.routes";
 import academicFacultyRoutes from "../modules/academicFaculty/academicFaculty.routes";
 import { academicSemesterRoutes } from "../modules/academicSemester/academicSemester.routes";
+import authRouter from "../modules/auth/auth.routes";
 import courseRoutes from "../modules/course/course.routes";
 import facultyRoutes from "../modules/faculty/faculty.routes";
 import offeredCourseRoutes from "../modules/offeredCourse/offeredCourse.routes";
@@ -49,6 +50,10 @@ const moduleRoutes: TRouter[] = [
     {
         path: "/offered-courses",
         route: offeredCourseRoutes,
+    },
+    {
+        path: "/auth",
+        route: authRouter,
     },
 ];
 moduleRoutes.forEach((router) => rootRoutes.use(router.path, router.route));
