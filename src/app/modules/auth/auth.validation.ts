@@ -6,3 +6,16 @@ export const loginValidationSchema = z.object({
         password: z.string({ required_error: "password must be required" }),
     }),
 });
+
+export const changePasswordValidationSchema = z.object({
+    body: z.object({
+        oldPassword: z.string({
+            required_error: "old password must be required",
+        }),
+        password: z.string({ required_error: "password must be required" }),
+    }),
+});
+
+export type TChangePassword = z.infer<
+    typeof changePasswordValidationSchema.shape.body
+>;

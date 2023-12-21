@@ -2,8 +2,10 @@ import httpStatus from "http-status";
 import Jwt from "jsonwebtoken";
 import { AppError } from "../../ErrorBoundary/error";
 import config from "../../config";
+import hashPassword from "../../lib/hashPassword";
 import { User } from "../user/user.model";
-import { TAuth } from "./auth.interface";
+import { TAuth, TDecodedUser } from "./auth.interface";
+import { TChangePassword } from "./auth.validation";
 
 export const logInService = async (payload: TAuth) => {
     const user = await User.isUserExistByCustomId(payload.id);
@@ -41,4 +43,37 @@ export const logInService = async (payload: TAuth) => {
         accessToken: token,
         needsPasswordChanged: user.needsPasswordChange,
     };
+};
+
+export const changePasswordService = async (
+    user: TDecodedUser,
+    payload: TChangePassword,
+) => {
+    // check old password or existing password are same
+    const existingUserPassword = await User.isUserExistByCustomId(user.userId);
+    if (
+        !(await User.isPasswordMatch(
+            payload.oldPassword,
+            existingUserPassword?.password as string,
+        ))
+    ) {
+        throw new AppError(
+            httpStatus.BAD_REQUEST,
+            "your old password is not valid",
+        );
+    }
+    // hash new password
+    const hashedPassword = hashPassword(payload.password);
+    await User.findOneAndUpdate(
+        {
+            id: user.userId,
+            role: user.role,
+        },
+        {
+            password: hashedPassword,
+            needsPasswordChange: false,
+            passwordChangedAt: new Date(),
+        },
+    );
+    return null;
 };

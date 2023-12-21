@@ -12,6 +12,7 @@ import { Student } from "./student.model";
 export const getAllStudentService = (query: Record<string, unknown>) => {
     const studentQuery = new QueryBuilder<TStudent>(
         Student.find()
+            .populate("userId")
             .populate("academicSemester")
             .populate({
                 path: "academicDepartment",

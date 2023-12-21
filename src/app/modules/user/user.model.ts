@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import { Schema, model } from "mongoose";
-import config from "../../config";
+import hashPassword from "../../lib/hashPassword";
 import { TUser, UserModel } from "./user.interface";
 
 export const userSchema = new Schema<TUser, UserModel>(
@@ -13,6 +13,7 @@ export const userSchema = new Schema<TUser, UserModel>(
         password: {
             type: String,
             required: true,
+            select: 0,
         },
         needsPasswordChange: {
             type: Boolean,
@@ -40,10 +41,7 @@ export const userSchema = new Schema<TUser, UserModel>(
 
 // password hashing before save in database
 userSchema.pre("save", async function (next) {
-    this.password = await bcrypt.hash(
-        this.password,
-        Number(config.salt_rounds),
-    );
+    this.password = hashPassword(this.password);
     next();
 });
 
@@ -59,7 +57,7 @@ userSchema.statics.isPasswordMatch = async function (
 userSchema.statics.isUserExistByCustomId = function (id: string) {
     return this.findOne({
         id,
-    });
+    }).select("+password");
 };
 
 export const User = model<TUser, UserModel>("User", userSchema);
