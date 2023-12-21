@@ -1,10 +1,11 @@
 import httpStatus from "http-status";
-import Jwt from "jsonwebtoken";
+import { JwtPayload } from "jsonwebtoken";
 import { AppError } from "../../ErrorBoundary/error";
 import config from "../../config";
 import hashPassword from "../../lib/hashPassword";
 import { User } from "../user/user.model";
-import { TAuth, TDecodedUser } from "./auth.interface";
+import { TAuth } from "./auth.interface";
+import { jwtTokenGenerator } from "./auth.utils";
 import { TChangePassword } from "./auth.validation";
 
 export const logInService = async (payload: TAuth) => {
@@ -36,17 +37,25 @@ export const logInService = async (payload: TAuth) => {
         userId: user.id,
         role: user.role,
     };
-    const token = await Jwt.sign(jwtPayload, config.jwt_secret as string, {
-        expiresIn: "10d",
-    });
+    const accessToken = jwtTokenGenerator(
+        jwtPayload,
+        config.jwt_access_secret as string,
+        config.jwt_access_expire_in as string,
+    );
+    const refreshToken = jwtTokenGenerator(
+        jwtPayload,
+        config.jwt_refresh_secret as string,
+        config.jwt_refresh_expire_in as string,
+    );
     return {
-        accessToken: token,
+        accessToken,
+        refreshToken,
         needsPasswordChanged: user.needsPasswordChange,
     };
 };
 
 export const changePasswordService = async (
-    user: TDecodedUser,
+    user: JwtPayload,
     payload: TChangePassword,
 ) => {
     // check old password or existing password are same

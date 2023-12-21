@@ -13,7 +13,7 @@ export default function auth(...requestedRole: TUser_Role[]) {
         }
         const decoded = jwt.verify(
             token,
-            config.jwt_secret as string,
+            config.jwt_access_secret as string,
         ) as JwtPayload;
         const { userId, role, iat } = decoded;
         if (!decoded) {
@@ -31,7 +31,7 @@ export default function auth(...requestedRole: TUser_Role[]) {
             )
         ) {
             throw new AppError(
-                httpStatus.NOT_FOUND,
+                httpStatus.FORBIDDEN,
                 "Your login token expire! please login",
             );
         }
