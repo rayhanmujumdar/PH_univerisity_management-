@@ -6,6 +6,7 @@ const checkValidation = (schema: AnyZodObject | ZodOptional<AnyZodObject>) => {
         // validation and if req.body data is valid (checking zod validation) then pass to next middleware
         await schema.parseAsync({
             body: req.body,
+            cookie: req.cookies,
         });
         next();
     });

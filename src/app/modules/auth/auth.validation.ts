@@ -16,6 +16,14 @@ export const changePasswordValidationSchema = z.object({
     }),
 });
 
+export const refreshTokenValidationSchema = z.object({
+    cookie: z.object({
+        refreshToken: z.string({
+            required_error: "refresh token must be required",
+        }),
+    }),
+});
+
 export type TChangePassword = z.infer<
     typeof changePasswordValidationSchema.shape.body
 >;

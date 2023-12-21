@@ -2,10 +2,15 @@ import { Router } from "express";
 import auth from "../../middleware/auth";
 import checkValidation from "../../middleware/checkValidation";
 import { USER_ROLE } from "../user/user.constant";
-import { changePasswordController, loginController } from "./auth.controller";
+import {
+    changePasswordController,
+    loginController,
+    refreshTokenController,
+} from "./auth.controller";
 import {
     changePasswordValidationSchema,
     loginValidationSchema,
+    refreshTokenValidationSchema,
 } from "./auth.validation";
 
 const authRouter = Router();
@@ -23,6 +28,13 @@ authRouter.patch(
     auth(USER_ROLE.admin, USER_ROLE.faculty, USER_ROLE.student),
     checkValidation(changePasswordValidationSchema),
     changePasswordController,
+);
+
+// change password route
+authRouter.get(
+    "/refresh-token",
+    checkValidation(refreshTokenValidationSchema),
+    refreshTokenController,
 );
 
 export default authRouter;

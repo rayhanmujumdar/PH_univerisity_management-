@@ -9,7 +9,7 @@ export default function auth(...requestedRole: TUser_Role[]) {
     return catchAsync(async (req, _res, next) => {
         const token = req.headers.authorization;
         if (!token) {
-            throw new AppError(httpStatus.FORBIDDEN, "forbidden");
+            throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorize");
         }
         const decoded = jwt.verify(
             token,
@@ -17,11 +17,23 @@ export default function auth(...requestedRole: TUser_Role[]) {
         ) as JwtPayload;
         const { userId, role, iat } = decoded;
         if (!decoded) {
-            throw new AppError(httpStatus.FORBIDDEN, "forbidden");
+            throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorize");
         }
         const user = await User.isUserExistByCustomId(userId);
         if (!user) {
             throw new AppError(httpStatus.NOT_FOUND, "this user is not found!");
+        }
+
+        const isDeleted = user.isDeleted;
+        if (isDeleted) {
+            throw new AppError(
+                httpStatus.EXPECTATION_FAILED,
+                "User was deleted",
+            );
+        }
+        const status = user.status;
+        if (status === "block") {
+            throw new AppError(httpStatus.CONFLICT, "Blocked user");
         }
         if (
             user.passwordChangedAt &&

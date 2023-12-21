@@ -2,7 +2,11 @@ import httpStatus from "http-status";
 import config from "../../config";
 import catchAsync from "../../lib/catchAsync";
 import sendResponse from "../../lib/sendResponse";
-import { changePasswordService, logInService } from "./auth.services";
+import {
+    changePasswordService,
+    logInService,
+    refreshTokenService,
+} from "./auth.services";
 
 // log in with id or password controller
 export const loginController = catchAsync(async (req, res) => {
@@ -31,6 +35,18 @@ export const changePasswordController = catchAsync(async (req, res) => {
     sendResponse(res, {
         success: true,
         message: "Login successfully",
+        statusCode: httpStatus.OK,
+        data: result,
+    });
+});
+
+// refresh token controller
+export const refreshTokenController = catchAsync(async (req, res) => {
+    const { refreshToken } = req.cookies;
+    const result = await refreshTokenService(refreshToken);
+    sendResponse(res, {
+        success: true,
+        message: "access token retrieved successfully",
         statusCode: httpStatus.OK,
         data: result,
     });
