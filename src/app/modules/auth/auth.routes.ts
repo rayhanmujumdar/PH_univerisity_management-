@@ -4,11 +4,13 @@ import checkValidation from "../../middleware/checkValidation";
 import { USER_ROLE } from "../user/user.constant";
 import {
     changePasswordController,
+    forgetPasswordController,
     loginController,
     refreshTokenController,
 } from "./auth.controller";
 import {
     changePasswordValidationSchema,
+    forgetPasswordValidationSchema,
     loginValidationSchema,
     refreshTokenValidationSchema,
 } from "./auth.validation";
@@ -35,6 +37,14 @@ authRouter.get(
     "/refresh-token",
     checkValidation(refreshTokenValidationSchema),
     refreshTokenController,
+);
+
+
+// forget password route
+authRouter.get(
+    "/forget-password",
+    checkValidation(forgetPasswordValidationSchema),
+    forgetPasswordController,
 );
 
 export default authRouter;

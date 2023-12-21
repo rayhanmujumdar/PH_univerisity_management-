@@ -43,6 +43,7 @@ export const createStudentIntoDB = async (
             throw error(500, "Email already exist");
         }
         userData.role = "student";
+        userData.email = studentData.email;
         // set manually generated id
         userData.id = await generateStudentId(semesterData);
         // create a user (transaction - 1)
@@ -74,6 +75,7 @@ export const createFacultyIntoDB = async (
         session.startTransaction();
         const userData: Partial<TUser> = {};
         userData.role = "faculty";
+        userData.email = faculty.email;
         userData.password = password ? password : config.default_password;
         userData.id = await generateUserId("faculty");
         const newUser = await User.create([userData], { session });

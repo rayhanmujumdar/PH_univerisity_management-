@@ -6,6 +6,7 @@ export type TUser = {
     id: string;
     password: string;
     needsPasswordChange: boolean;
+    email: string;
     passwordChangedAt?: Date;
     status: "in-progress" | "block";
     isDeleted: boolean;

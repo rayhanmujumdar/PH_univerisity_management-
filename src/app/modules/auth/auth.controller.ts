@@ -4,6 +4,7 @@ import catchAsync from "../../lib/catchAsync";
 import sendResponse from "../../lib/sendResponse";
 import {
     changePasswordService,
+    forgetPasswordService,
     logInService,
     refreshTokenService,
 } from "./auth.services";
@@ -47,6 +48,17 @@ export const refreshTokenController = catchAsync(async (req, res) => {
     sendResponse(res, {
         success: true,
         message: "access token retrieved successfully",
+        statusCode: httpStatus.OK,
+        data: result,
+    });
+});
+// forget password controller
+export const forgetPasswordController = catchAsync(async (req, res) => {
+    const userId = req.body.id;
+    const result = await forgetPasswordService(userId);
+    sendResponse(res, {
+        success: true,
+        message: "forget password url retrieved successfully",
         statusCode: httpStatus.OK,
         data: result,
     });

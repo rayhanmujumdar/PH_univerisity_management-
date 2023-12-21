@@ -19,6 +19,11 @@ export const userSchema = new Schema<TUser, UserModel>(
             type: Boolean,
             default: true,
         },
+        email: {
+            type: String,
+            required: true,
+            unique: true,
+        },
         passwordChangedAt: {
             type: Date,
         },

@@ -3,6 +3,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import { AppError } from "../../ErrorBoundary/error";
 import config from "../../config";
 import hashPassword from "../../lib/hashPassword";
+import sendEmail from "../../lib/sendEmail";
 import { User } from "../user/user.model";
 import { TAuth } from "./auth.interface";
 import { jwtTokenGenerator } from "./auth.utils";
@@ -102,14 +103,13 @@ export const refreshTokenService = async (token: string) => {
         throw new AppError(httpStatus.UNAUTHORIZED, "forbidden");
     }
     const user = await User.isUserExistByCustomId(userId);
+    const { status, isDeleted } = user;
     if (!user) {
         throw new AppError(httpStatus.NOT_FOUND, "this user is not found!");
     }
-    const isDeleted = user.isDeleted;
     if (isDeleted) {
         throw new AppError(httpStatus.EXPECTATION_FAILED, "User was deleted");
     }
-    const status = user.status;
     if (status === "block") {
         throw new AppError(httpStatus.CONFLICT, "Blocked user");
     }
@@ -132,7 +132,34 @@ export const refreshTokenService = async (token: string) => {
     const accessToken = jwtTokenGenerator(
         jwtPayload,
         config.jwt_refresh_secret as string,
-        config.jwt_access_expire_in as string,
+        config.jwt_refresh_expire_in as string,
     );
     return accessToken;
+};
+
+// forget password service
+export const forgetPasswordService = async (userId: string) => {
+    const user = await User.isUserExistByCustomId(userId);
+    const { status, isDeleted } = user;
+    if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, "this user is not found!");
+    }
+    if (isDeleted) {
+        throw new AppError(httpStatus.EXPECTATION_FAILED, "User was deleted");
+    }
+    if (status === "block") {
+        throw new AppError(httpStatus.CONFLICT, "Blocked user");
+    }
+    const jwtPayload = {
+        userId: user.id,
+        role: user.role,
+    };
+    const resetToken = jwtTokenGenerator(
+        jwtPayload,
+        config.jwt_access_secret as string,
+        "10m",
+    );
+    const forgetPasswordLink = `http://localhost:5173?id=${userId}&token=${resetToken}`;
+    await sendEmail(forgetPasswordLink);
+    console.log(forgetPasswordLink);
 };
