@@ -6,6 +6,7 @@ export type TUser = {
     id: string;
     password: string;
     needsPasswordChange: boolean;
+    passwordChangedAt?: Date;
     status: "in-progress" | "block";
     isDeleted: boolean;
     role: TRole;
@@ -18,6 +19,10 @@ export interface UserModel extends Model<TUser> {
         plainPassword: string,
         hashPassword: string,
     ): Promise<boolean>;
+    isJwtIssuesAfterChangePassword(
+        passwordChangedTime: Date,
+        jwtTokenIssuesTime: number,
+    ): boolean;
 }
 
 export type TUser_Role = keyof typeof USER_ROLE;

@@ -19,6 +19,9 @@ export const userSchema = new Schema<TUser, UserModel>(
             type: Boolean,
             default: true,
         },
+        passwordChangedAt: {
+            type: Date,
+        },
         isDeleted: {
             type: Boolean,
             default: false,
@@ -58,6 +61,16 @@ userSchema.statics.isUserExistByCustomId = function (id: string) {
     return this.findOne({
         id,
     }).select("+password");
+};
+
+// jwt time issues check
+userSchema.statics.isJwtIssuesAfterChangePassword = function (
+    passwordChangedTime,
+    jwtTokenIssuesTime,
+) {
+    const passwordChangeTimeConvertedDateTime =
+        new Date(passwordChangedTime).getTime() / 1000;
+    return passwordChangeTimeConvertedDateTime > jwtTokenIssuesTime;
 };
 
 export const User = model<TUser, UserModel>("User", userSchema);
