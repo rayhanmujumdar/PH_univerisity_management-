@@ -31,6 +31,17 @@ export const forgetPasswordValidationSchema = z.object({
     }),
 });
 
+export const resetPasswordValidationSchema = z.object({
+    body: z.object({
+        id: z.string({
+            required_error: "id must be required",
+        }),
+        newPassword: z.string({
+            required_error: "newPassword must be required",
+        }),
+    }),
+});
+
 export type TChangePassword = z.infer<
     typeof changePasswordValidationSchema.shape.body
 >;

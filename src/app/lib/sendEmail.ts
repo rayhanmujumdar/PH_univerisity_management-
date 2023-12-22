@@ -1,24 +1,29 @@
 import nodemailer from "nodemailer";
 import config from "../config";
-const sendEmail = async (data: unknown) => {
-    const transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port: 587,
-        secure: config.NODE_ENV === 'production',
-        auth: {
-            // TODO: replace `user` and `pass` values from <https://forwardemail.net>
-            user: "REPLACE-WITH-YOUR-ALIAS@YOURDOMAIN.COM",
-            pass: "REPLACE-WITH-YOUR-GENERATED-PASSWORD",
-        },
-    });
-    const info = await transporter.sendMail({
-        from: '"Fred Foo 👻" <foo@example.com>', // sender address
-        to: "bar@example.com, baz@example.com", // list of receivers
-        subject: "Hello ✔", // Subject line
-        text: "Hello world?", // plain text body
-        html: "<b>Hello world?</b>", // html body
-    });
-    console.log(info);
+import { AppError } from "../ErrorBoundary/error";
+import httpStatus from "http-status";
+const sendEmail = async (userEmail: string, url: string) => {
+    try {
+        const transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 587,
+            requireTLS: true,
+            secure: config.NODE_ENV === "production",
+            auth: {
+                user: "rayhanmujumdar0177@gmail.com",
+                pass: "xiwe armn hqto afvo",
+            },
+        });
+        await transporter.sendMail({
+            from: "rayhanmujumdar0177@gmail.com", // sender address
+            to: "rayhanmojumdar0177@gmail.com", // list of receivers
+            subject: "Reset password", // Subject line
+            text: "You can reset your password in this below link", // plain text body
+            html: `<b>${url}</b>`, // html body
+        });
+    } catch (err) {
+        throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, 'nodemailer internal server error')
+    }
 };
 
 export default sendEmail;

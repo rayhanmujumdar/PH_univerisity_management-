@@ -7,6 +7,7 @@ import {
     forgetPasswordService,
     logInService,
     refreshTokenService,
+    resetPasswordService,
 } from "./auth.services";
 
 // log in with id or password controller
@@ -56,6 +57,19 @@ export const refreshTokenController = catchAsync(async (req, res) => {
 export const forgetPasswordController = catchAsync(async (req, res) => {
     const userId = req.body.id;
     const result = await forgetPasswordService(userId);
+    sendResponse(res, {
+        success: true,
+        message: "forget password url retrieved successfully",
+        statusCode: httpStatus.OK,
+        data: result,
+    });
+});
+
+// reset password controller
+export const resetPasswordController = catchAsync(async (req, res) => {
+    const payload = req.body;
+    const token = req.headers.authorization;
+    const result = await resetPasswordService(token as string, payload);
     sendResponse(res, {
         success: true,
         message: "forget password url retrieved successfully",

@@ -5,7 +5,7 @@ import config from "../../config";
 import hashPassword from "../../lib/hashPassword";
 import sendEmail from "../../lib/sendEmail";
 import { User } from "../user/user.model";
-import { TAuth } from "./auth.interface";
+import { TAuth, TResetPassword } from "./auth.interface";
 import { jwtTokenGenerator } from "./auth.utils";
 import { TChangePassword } from "./auth.validation";
 // login service
@@ -159,7 +159,25 @@ export const forgetPasswordService = async (userId: string) => {
         config.jwt_access_secret as string,
         "10m",
     );
-    const forgetPasswordLink = `http://localhost:5173?id=${userId}&token=${resetToken}`;
-    await sendEmail(forgetPasswordLink);
-    console.log(forgetPasswordLink);
+    const resetPasswordLink = `${config.reset_password_link}?id=${userId}&token=${resetToken}`;
+    await sendEmail(user.email, resetPasswordLink);
+};
+export const resetPasswordService = async (
+    token: string,
+    payload: TResetPassword,
+) => {
+    const user = await User.isUserExistByCustomId(payload.id);
+    if (!token) {
+        throw new AppError(httpStatus.UNAUTHORIZED, "unauthorize");
+    }
+    const { status, isDeleted } = user;
+    if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, "this user is not found!");
+    }
+    if (isDeleted) {
+        throw new AppError(httpStatus.EXPECTATION_FAILED, "User was deleted");
+    }
+    if (status === "block") {
+        throw new AppError(httpStatus.CONFLICT, "Blocked user");
+    }
 };

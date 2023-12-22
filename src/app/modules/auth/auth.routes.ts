@@ -13,6 +13,7 @@ import {
     forgetPasswordValidationSchema,
     loginValidationSchema,
     refreshTokenValidationSchema,
+    resetPasswordValidationSchema,
 } from "./auth.validation";
 
 const authRouter = Router();
@@ -44,6 +45,14 @@ authRouter.get(
 authRouter.get(
     "/forget-password",
     checkValidation(forgetPasswordValidationSchema),
+    forgetPasswordController,
+);
+
+
+// reset password route
+authRouter.get(
+    "/reset-password",
+    checkValidation(resetPasswordValidationSchema),
     forgetPasswordController,
 );
 
