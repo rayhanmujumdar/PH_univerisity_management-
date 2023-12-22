@@ -72,7 +72,7 @@ export const resetPasswordController = catchAsync(async (req, res) => {
     const result = await resetPasswordService(token as string, payload);
     sendResponse(res, {
         success: true,
-        message: "forget password url retrieved successfully",
+        message: "password reset successfully",
         statusCode: httpStatus.OK,
         data: result,
     });

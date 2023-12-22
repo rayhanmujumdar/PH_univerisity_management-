@@ -180,4 +180,21 @@ export const resetPasswordService = async (
     if (status === "block") {
         throw new AppError(httpStatus.CONFLICT, "Blocked user");
     }
+    const decoded = jwt.verify(
+        token,
+        config.jwt_access_secret as string,
+    ) as JwtPayload;
+    if (decoded.id !== payload.id) {
+        throw new AppError(httpStatus.UNAUTHORIZED, "unauthorize");
+    }
+    const hashNewPassword = hashPassword(payload.newPassword);
+    await User.findOneAndUpdate(
+        { id: decoded.id, role: decoded.role },
+        {
+            password: hashNewPassword,
+            needsPasswordChange: false,
+            passwordCreatedAt: new Date(),
+        },
+    );
+    return;
 };

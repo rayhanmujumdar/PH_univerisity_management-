@@ -40,7 +40,6 @@ authRouter.get(
     refreshTokenController,
 );
 
-
 // forget password route
 authRouter.get(
     "/forget-password",
@@ -48,9 +47,8 @@ authRouter.get(
     forgetPasswordController,
 );
 
-
 // reset password route
-authRouter.get(
+authRouter.post(
     "/reset-password",
     checkValidation(resetPasswordValidationSchema),
     forgetPasswordController,
