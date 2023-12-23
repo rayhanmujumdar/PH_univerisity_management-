@@ -10,6 +10,7 @@ export const adminSchema = new Schema<TAdmin>(
         },
         userId: {
             type: Schema.Types.ObjectId,
+            ref: "User",
             required: [true, "userId must be required"],
         },
         name: userNameSchema,

@@ -4,6 +4,8 @@ import mongoose from "mongoose";
 import error, { AppError } from "../../ErrorBoundary/error";
 import config from "../../config";
 import AcademicSemester from "../academicSemester/academicSemester.model";
+import { TAdmin } from "../admin/admin.interface";
+import Admin from "../admin/admin.model";
 import { TFaculty } from "../faculty/faculty.interface";
 import Faculty from "../faculty/faculty.model";
 import { TStudent } from "../student/student.interface";
@@ -15,8 +17,6 @@ import {
     generateStudentId,
     generateUserId,
 } from "./user.utilis";
-import Admin from "../admin/admin.model";
-import { TAdmin } from "../admin/admin.interface";
 
 export const createStudentIntoDB = async (
     password: string,
@@ -121,10 +121,7 @@ export const createAdminIntoDB = async (
         userData.id = await generateUserId("admin");
         const newUser = await User.create([userData], { session });
         if (!newUser.length) {
-            throw new AppError(
-                httpStatus.BAD_REQUEST,
-                "admin created failed",
-            );
+            throw new AppError(httpStatus.BAD_REQUEST, "admin created failed");
         }
         admin.id = newUser[0].id;
         admin.userId = newUser[0]._id;
@@ -145,4 +142,21 @@ export const createAdminIntoDB = async (
         await session.endSession();
         throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, err.message);
     }
+};
+
+export const getMeFromDB = async (id: string, role: string) => {
+    let result = null;
+    if (role === "student") {
+        result = await Student.findOne({ id })
+            .populate("userId")
+            .populate("academicSemester")
+            .populate("academicDepartment");
+    }
+    if (role === "admin") {
+        result = await Admin.findOne({ id }).populate("userId");
+    }
+    if (role === "faculty") {
+        result = await Faculty.findOne({ id }).populate("userId");
+    }
+    return result;
 };
