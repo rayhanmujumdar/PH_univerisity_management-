@@ -3,6 +3,7 @@ import httpStatus from "http-status";
 import mongoose from "mongoose";
 import error, { AppError } from "../../ErrorBoundary/error";
 import config from "../../config";
+import sendImageToCloudinary from "../../lib/sendImageToCloudinary";
 import AcademicSemester from "../academicSemester/academicSemester.model";
 import { TAdmin } from "../admin/admin.interface";
 import Admin from "../admin/admin.model";
@@ -49,6 +50,7 @@ export const createStudentIntoDB = async (
         }
         userData.role = "student";
         userData.email = studentData.email;
+        sendImageToCloudinary();
         // set manually generated id
         userData.id = await generateStudentId(semesterData);
         // create a user (transaction - 1)
