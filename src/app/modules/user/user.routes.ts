@@ -6,11 +6,13 @@ import { createFacultyValidationSchema } from "../faculty/faculty.validation";
 import { createStudentValidationSchema } from "../student/student.validation";
 import { USER_ROLE } from "./user.constant";
 import {
+    changeStatusController,
     createAdminController,
     createFacultyController,
     createStudentController,
     getMeController,
 } from "./user.controller";
+import { changeStatusValidationSchema } from "./user.validatin";
 
 const router = express.Router();
 
@@ -39,5 +41,13 @@ router.post(
 );
 // get me route
 router.get("/me", auth("student", "faculty", "admin"), getMeController);
+
+// change status
+router.patch(
+    "/change-status/:id",
+    auth("admin"),
+    checkValidation(changeStatusValidationSchema),
+    changeStatusController,
+);
 
 export const userRouter = router;

@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import { Schema, model } from "mongoose";
 import hashPassword from "../../lib/hashPassword";
+import { userStatus } from "./user.constant";
 import { TUser, UserModel } from "./user.interface";
 
 export const userSchema = new Schema<TUser, UserModel>(
@@ -38,7 +39,7 @@ export const userSchema = new Schema<TUser, UserModel>(
         },
         status: {
             type: String,
-            enum: ["in-progress", "block"],
+            enum: userStatus,
             default: "in-progress",
         },
     },

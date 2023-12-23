@@ -2,6 +2,7 @@ import httpStatus from "http-status";
 import catchAsync from "../../lib/catchAsync";
 import sendResponse from "../../lib/sendResponse";
 import {
+    changeStatusService,
     createAdminIntoDB,
     createFacultyIntoDB,
     createStudentIntoDB,
@@ -50,6 +51,20 @@ export const getMeController = catchAsync(async (req, res) => {
     sendResponse(res, {
         success: true,
         message: `${role} retrieved successfully`,
+        statusCode: httpStatus.OK,
+        data: result,
+    });
+});
+
+// change user status controller
+export const changeStatusController = catchAsync(async (req, res) => {
+    const adminId = req.decoded.userId;
+    const id = req.params.id;
+    const payload = req.body;
+    const result = await changeStatusService(id, payload, adminId);
+    sendResponse(res, {
+        success: true,
+        message: `user status updated to ${payload.status}`,
         statusCode: httpStatus.OK,
         data: result,
     });

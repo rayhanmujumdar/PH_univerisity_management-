@@ -17,7 +17,9 @@ import {
     generateStudentId,
     generateUserId,
 } from "./user.utilis";
+import { TUserStatus } from "./user.validatin";
 
+// create a student into database
 export const createStudentIntoDB = async (
     password: string,
     studentData: Partial<TStudent>,
@@ -69,6 +71,7 @@ export const createStudentIntoDB = async (
     }
 };
 
+// create a faculty into database
 export const createFacultyIntoDB = async (
     password: string,
     faculty: Partial<TFaculty>,
@@ -107,6 +110,7 @@ export const createFacultyIntoDB = async (
         throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, err.message);
     }
 };
+// create a new admin into database
 export const createAdminIntoDB = async (
     password: string,
     admin: Partial<TAdmin>,
@@ -143,7 +147,7 @@ export const createAdminIntoDB = async (
         throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, err.message);
     }
 };
-
+// get me from database
 export const getMeFromDB = async (id: string, role: string) => {
     let result = null;
     if (role === "student") {
@@ -158,5 +162,23 @@ export const getMeFromDB = async (id: string, role: string) => {
     if (role === "faculty") {
         result = await Faculty.findOne({ id }).populate("userId");
     }
+    return result;
+};
+
+// only admin can change user status  service
+
+export const changeStatusService = async (
+    id: string,
+    payload: TUserStatus,
+    adminId: string,
+) => {
+    const getAdminId = await User.findOne({ id: adminId }).select("_id");
+    if (id === getAdminId?._id.toString()) {
+        throw new AppError(
+            httpStatus.CONFLICT,
+            "you can not updated your status",
+        );
+    }
+    const result = await User.findByIdAndUpdate(id, payload, { new: true });
     return result;
 };
