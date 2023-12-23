@@ -1,4 +1,6 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
+import multer from "multer";
+import path from "path";
 import auth from "../../middleware/auth";
 import checkValidation from "../../middleware/checkValidation";
 import { createAdminValidationSchema } from "../admin/admin.validation";
@@ -14,12 +16,19 @@ import {
 } from "./user.controller";
 import { changeStatusValidationSchema } from "./user.validatin";
 
+const upload = multer({ dest: path.join(process.cwd(), "/uploads/") });
+
 const router = express.Router();
 
 // you can create a new student hit this route
 router.post(
     "/create-student",
     auth(USER_ROLE.admin),
+    upload.single("files"),
+    (req: Request, _res: Response, next: NextFunction) => {
+        req.body = JSON.parse(req.body.data);
+        next();
+    },
     checkValidation(createStudentValidationSchema),
     createStudentController,
 );

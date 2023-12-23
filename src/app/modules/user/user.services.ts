@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { UploadApiResponse } from "cloudinary";
 import httpStatus from "http-status";
 import mongoose from "mongoose";
 import error, { AppError } from "../../ErrorBoundary/error";
 import config from "../../config";
-import sendImageToCloudinary from "../../lib/sendImageToCloudinary";
+import sendImageToCloud from "../../lib/sendImageToCloud";
 import AcademicSemester from "../academicSemester/academicSemester.model";
 import { TAdmin } from "../admin/admin.interface";
 import Admin from "../admin/admin.model";
@@ -22,6 +23,7 @@ import { TUserStatus } from "./user.validatin";
 
 // create a student into database
 export const createStudentIntoDB = async (
+    file: any,
     password: string,
     studentData: Partial<TStudent>,
 ) => {
@@ -50,7 +52,6 @@ export const createStudentIntoDB = async (
         }
         userData.role = "student";
         userData.email = studentData.email;
-        sendImageToCloudinary();
         // set manually generated id
         userData.id = await generateStudentId(semesterData);
         // create a user (transaction - 1)
@@ -61,6 +62,14 @@ export const createStudentIntoDB = async (
         }
         studentData.id = newUser[0].id;
         studentData.userId = newUser[0]._id;
+        // TODO: image upload into cloudnairy
+        const path = file?.path;
+        const imageName = `${newUser?.[0]._id} - ${studentData.name?.firstName}`;
+        const uploadedImage = (await sendImageToCloud(
+            path as string,
+            imageName,
+        )) as UploadApiResponse;
+        studentData.profileImg = uploadedImage.secure_url;
         // create a student (transaction - 2)
         const [newStudent] = await Student.create([studentData], { session });
         await session.commitTransaction();

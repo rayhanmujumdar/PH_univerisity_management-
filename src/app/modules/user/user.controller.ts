@@ -11,7 +11,11 @@ import {
 // student controller
 export const createStudentController = catchAsync(async (req, res) => {
     const { password, student } = req.body;
-    const newStudentData = await createStudentIntoDB(password, student);
+    const newStudentData = await createStudentIntoDB(
+        req.file,
+        password,
+        student,
+    );
     sendResponse(res, {
         success: true,
         message: "Student created successfully",
