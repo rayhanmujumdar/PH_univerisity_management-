@@ -1,24 +1,24 @@
 import { z } from "zod";
+import { bloodGroup } from "../faculty/faculty.model";
 import {
     updateUserNameValidationSchema,
     userNameValidationSchema,
 } from "../student/student.validation";
-import { bloodGroup } from "./faculty.model";
 
-export const createFacultyValidationSchema = z.object({
+export const createAdminValidationSchema = z.object({
     body: z.object({
         password: z.string().min(6).max(20).optional(),
-        faculty: z.object({
+        admin: z.object({
             name: userNameValidationSchema.required(),
             gender: z.enum(["male", "female", "other"], {
                 required_error: "gender must be required",
             }),
-            designation: z.string({
-                required_error: "designation must be required",
-            }),
             age: z.number({ required_error: "age must be required" }),
             dateOfBirth: z.string({
                 required_error: "dateOfBirth must be required",
+            }),
+            designation: z.string({
+                required_error: "designation must be required",
             }),
             bloodGroup: z.enum([...bloodGroup] as [string, ...string[]], {
                 required_error: "bloodGroup must be required",
@@ -60,22 +60,13 @@ export const createFacultyValidationSchema = z.object({
             permanentAddress: z.string({
                 required_error: "permanentAddress must be required",
             }),
-            academicFaculty: z.string({
-                required_error: "academicFaculty must be required",
-            }),
-            academicDepartment: z.string({
-                required_error: "admissionSemester must be required",
-            }),
             profileImg: z.string().optional(),
-            department: z.string({
-                required_error: "department must be required",
-            }),
         }),
     }),
 });
 
 //
-export const updateFacultyValidationSchema = z.object({
+export const updateAdminValidationSchema = z.object({
     body: z.object({
         name: updateUserNameValidationSchema.optional(),
         gender: z
@@ -87,6 +78,11 @@ export const updateFacultyValidationSchema = z.object({
         dateOfBirth: z
             .string({
                 required_error: "dateOfBirth must be required",
+            })
+            .optional(),
+        bloodGroup: z
+            .enum([...bloodGroup] as [string, ...string[]], {
+                required_error: "bloodGroup must be required",
             })
             .optional(),
         email: z
@@ -131,26 +127,11 @@ export const updateFacultyValidationSchema = z.object({
                 required_error: "permanentAddress must be required",
             })
             .optional(),
-        academicFaculty: z
-            .string({
-                required_error: "academicFaculty must be required",
-            })
-            .optional(),
-        academicDepartment: z
-            .string({
-                required_error: "admissionSemester must be required",
-            })
-            .optional(),
         designation: z
             .string({
                 required_error: "designation must be required",
             })
             .optional(),
         profileImg: z.string().optional(),
-        department: z
-            .string({
-                required_error: "department must be required",
-            })
-            .optional(),
     }),
 });

@@ -104,6 +104,11 @@ const studentSchema = new Schema<TStudent>(
             type: String,
             required: true,
         },
+        bloodGroup: {
+            type: String,
+            required: true,
+            enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+        },
         email: {
             type: String,
             unique: true,

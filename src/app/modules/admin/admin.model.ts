@@ -1,10 +1,8 @@
 import { Query, Schema, model } from "mongoose";
 import { userNameSchema } from "../student/student.model";
-import { TFaculty } from "./faculty.interface";
+import { TAdmin } from "./admin.interface";
 
-export const bloodGroup = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
-
-export const facultySchema = new Schema<TFaculty>(
+export const adminSchema = new Schema<TAdmin>(
     {
         id: {
             type: String,
@@ -19,11 +17,7 @@ export const facultySchema = new Schema<TFaculty>(
             type: Number,
             required: [true, "age must be required"],
         },
-        bloodGroup: {
-            type: String,
-            required: true,
-            enum: bloodGroup,
-        },
+
         gender: {
             type: String,
             enum: ["male", "female", "other"],
@@ -45,16 +39,6 @@ export const facultySchema = new Schema<TFaculty>(
             type: String,
             required: [true, "department must be required"],
         },
-        academicDepartment: {
-            type: Schema.Types.ObjectId,
-            required: [true, "academicDepartment must be required"],
-            ref: "AcademicDepartment",
-        },
-        academicFaculty: {
-            type: Schema.Types.ObjectId,
-            required: [true, "academicFaculty must be required"],
-            ref: "AcademicFaculty",
-        },
         presentAddress: {
             type: String,
             required: [true, "presentAddress must be required"],
@@ -62,6 +46,11 @@ export const facultySchema = new Schema<TFaculty>(
         permanentAddress: {
             type: String,
             required: [true, "permanentAddress must be required"],
+        },
+        bloodGroup: {
+            type: String,
+            required: true,
+            enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
         },
         profileImg: String,
         emergencyContactNo: {
@@ -82,12 +71,12 @@ export const facultySchema = new Schema<TFaculty>(
     },
 );
 
-// check deleted faculty
-facultySchema.pre(/^find/, function (this: Query<TFaculty, Document>, next) {
+// check deleted admin
+adminSchema.pre(/^find/, function (this: Query<TAdmin, Document>, next) {
     this.find({ isDeleted: { $ne: true } });
     next();
 });
 
-const Faculty = model<TFaculty>("Faculty", facultySchema);
+const Admin = model<TAdmin>("Admin", adminSchema);
 
-export default Faculty;
+export default Admin;

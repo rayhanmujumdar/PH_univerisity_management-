@@ -44,19 +44,19 @@ export const generateStudentId = async (semesterData: TAcademicSemester) => {
 };
 
 export const generateUserId = async (roleName: "faculty" | "admin") => {
-    const lastFacultyId = await findLastUserId(roleName);
+    const lastUserId = await findLastUserId(roleName);
     const currentFourDigitNumber = "0".padStart(4, "0");
     // F-0001
-    let lastFacultyNumber = lastFacultyId?.split("-")[1];
-    if (lastFacultyId) {
-        lastFacultyNumber = (Number(lastFacultyNumber) + 1)
+    let lastUserNumber = lastUserId?.split("-")[1];
+    if (lastUserId) {
+        lastUserNumber = (Number(lastUserNumber) + 1)
             .toString()
             .padStart(4, "0");
     } else {
-        lastFacultyNumber = (Number(currentFourDigitNumber) + 1)
+        lastUserNumber = (Number(currentFourDigitNumber) + 1)
             .toString()
             .padStart(4, "0");
     }
     const prefixRole = roleName === "faculty" ? "F" : "A";
-    return `${prefixRole}-${lastFacultyNumber}`;
+    return `${prefixRole}-${lastUserNumber}`;
 };

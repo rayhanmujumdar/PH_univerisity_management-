@@ -5,9 +5,11 @@ import { createFacultyValidationSchema } from "../faculty/faculty.validation";
 import { createStudentValidationSchema } from "../student/student.validation";
 import { USER_ROLE } from "./user.constant";
 import {
+    createAdminController,
     createFacultyController,
     createStudentController,
 } from "./user.controller";
+import { createAdminValidationSchema } from "../admin/admin.validation";
 
 const router = express.Router();
 
@@ -25,6 +27,15 @@ router.post(
     auth(USER_ROLE.admin),
     checkValidation(createFacultyValidationSchema),
     createFacultyController,
+);
+
+
+// create a new admin
+router.post(
+    "/create-admin",
+    // auth(USER_ROLE.admin),
+    checkValidation(createAdminValidationSchema),
+    createAdminController,
 );
 
 export const userRouter = router;

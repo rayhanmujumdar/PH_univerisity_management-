@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { bloodGroup } from "../faculty/faculty.model";
 
 export const userNameValidationSchema = z.object({
     firstName: z
@@ -70,6 +71,9 @@ export const createStudentValidationSchema = z.object({
             age: z.number({ required_error: "age must be required" }),
             dateOfBirth: z.string({
                 required_error: "dateOfBirth must be required",
+            }),
+            bloodGroup: z.enum([...bloodGroup] as [string, ...string[]], {
+                required_error: "bloodGroup must be required",
             }),
             email: z
                 .string({ required_error: "email must be required" })

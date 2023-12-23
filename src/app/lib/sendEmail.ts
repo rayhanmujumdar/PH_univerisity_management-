@@ -1,17 +1,17 @@
-import nodemailer from "nodemailer";
-import config from "../config";
-import { AppError } from "../ErrorBoundary/error";
 import httpStatus from "http-status";
+import nodemailer from "nodemailer";
+import { AppError } from "../ErrorBoundary/error";
+import config from "../config";
 const sendEmail = async (userEmail: string, url: string) => {
     try {
         const transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",
-            port: 587,
+            port: Number(config.nodemailer_port),
             requireTLS: true,
             secure: config.NODE_ENV === "production",
             auth: {
-                user: "rayhanmujumdar0177@gmail.com",
-                pass: "xiwe armn hqto afvo",
+                user: config.nodemailer_user,
+                pass: config.nodemailer_pass,
             },
         });
         await transporter.sendMail({
@@ -22,7 +22,10 @@ const sendEmail = async (userEmail: string, url: string) => {
             html: `<b>${url}</b>`, // html body
         });
     } catch (err) {
-        throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, 'nodemailer internal server error')
+        throw new AppError(
+            httpStatus.INTERNAL_SERVER_ERROR,
+            "nodemailer internal server error",
+        );
     }
 };
 

@@ -15,6 +15,8 @@ import {
     generateStudentId,
     generateUserId,
 } from "./user.utilis";
+import Admin from "../admin/admin.model";
+import { TAdmin } from "../admin/admin.interface";
 
 export const createStudentIntoDB = async (
     password: string,
@@ -39,6 +41,7 @@ export const createStudentIntoDB = async (
             studentData.email,
             Student.find(),
         );
+        userData.needsPasswordChange = password ? false : true;
         if (isExistEmailIntoDB) {
             throw error(500, "Email already exist");
         }
@@ -98,6 +101,45 @@ export const createFacultyIntoDB = async (
         await session.commitTransaction();
         await session.endSession();
         return newFaculty;
+    } catch (err: any) {
+        await session.abortTransaction();
+        await session.endSession();
+        throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, err.message);
+    }
+};
+export const createAdminIntoDB = async (
+    password: string,
+    admin: Partial<TAdmin>,
+) => {
+    const session = await mongoose.startSession();
+    try {
+        session.startTransaction();
+        const userData: Partial<TUser> = {};
+        userData.role = "admin";
+        userData.email = admin.email;
+        userData.password = password ? password : config.default_password;
+        userData.id = await generateUserId("admin");
+        const newUser = await User.create([userData], { session });
+        if (!newUser.length) {
+            throw new AppError(
+                httpStatus.BAD_REQUEST,
+                "admin created failed",
+            );
+        }
+        admin.id = newUser[0].id;
+        admin.userId = newUser[0]._id;
+        const isExistEmailIntoDB = await duplicateEmailCheck<TStudent>(
+            admin?.email,
+            Admin.find(),
+        );
+        if (isExistEmailIntoDB) {
+            throw error(500, "Email already exist");
+        }
+        //TODO: there are have a admin model not faculty
+        const [newAdmin] = await Admin.create([admin], { session });
+        await session.commitTransaction();
+        await session.endSession();
+        return newAdmin;
     } catch (err: any) {
         await session.abortTransaction();
         await session.endSession();
