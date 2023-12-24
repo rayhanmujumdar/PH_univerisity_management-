@@ -4,6 +4,7 @@ import academicFacultyRoutes from "../modules/academicFaculty/academicFaculty.ro
 import { academicSemesterRoutes } from "../modules/academicSemester/academicSemester.routes";
 import authRouter from "../modules/auth/auth.routes";
 import courseRoutes from "../modules/course/course.routes";
+import enrollCourseRouter from "../modules/enrollCourse/enrollCourse.routes";
 import facultyRoutes from "../modules/faculty/faculty.routes";
 import offeredCourseRoutes from "../modules/offeredCourse/offeredCourse.routes";
 import semesterRegistrationRoutes from "../modules/semesterRegistration/semsterRegistration.routes";
@@ -54,6 +55,10 @@ const moduleRoutes: TRouter[] = [
     {
         path: "/auth",
         route: authRouter,
+    },
+    {
+        path: "/enroll-course",
+        route: enrollCourseRouter,
     },
 ];
 moduleRoutes.forEach((router) => rootRoutes.use(router.path, router.route));
