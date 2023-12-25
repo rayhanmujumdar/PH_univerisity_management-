@@ -10,7 +10,7 @@ export type TOfferedCorse = {
     course: Types.ObjectId;
     maxCapacity: number;
     section: number;
-    days: TDays;
+    days: TDays[];
     startTime: string;
     endTime: string;
 };

@@ -40,7 +40,9 @@ export const createOfferedCourseValidationSchema = z.object({
                 required_error: "maxCapacity must be required",
             }),
             section: z.number({ required_error: "section must be required" }),
-            days: z.enum([...Days] as [string, ...string[]]),
+            days: z.array(
+                z.enum([...Days] as [string, ...string[]]).optional(),
+            ),
             startTime: timeValidation,
             endTime: timeValidation,
         })
@@ -65,7 +67,9 @@ export const updateOfferedCourseValidationSchema = z.object({
             maxCapacity: z.number({
                 required_error: "maxCapacity must be required",
             }),
-            days: z.enum([...Days] as [string, ...string[]]).optional(),
+            days: z.array(
+                z.enum([...Days] as [string, ...string[]]).optional(),
+            ),
             startTime: timeValidation,
             endTime: timeValidation,
         })

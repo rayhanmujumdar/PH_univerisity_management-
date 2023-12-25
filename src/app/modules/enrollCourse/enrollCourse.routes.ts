@@ -1,8 +1,14 @@
 import { Router } from "express";
 import auth from "../../middleware/auth";
 import checkValidation from "../../middleware/checkValidation";
-import { createEnrollCourseController } from "./enrollCourse.controller";
-import { createEnrollCourseValidationSchema } from "./enrollCourse.validation";
+import {
+    createEnrollCourseController,
+    updateEnrollCourseController,
+} from "./enrollCourse.controller";
+import {
+    createEnrollCourseValidationSchema,
+    updateEnrollCourseValidationSchema,
+} from "./enrollCourse.validation";
 
 const enrollCourseRouter = Router();
 
@@ -12,6 +18,14 @@ enrollCourseRouter.post(
     auth("student"),
     checkValidation(createEnrollCourseValidationSchema),
     createEnrollCourseController,
+);
+
+// course enroll create route
+enrollCourseRouter.patch(
+    "/:id",
+    auth("student"),
+    checkValidation(updateEnrollCourseValidationSchema),
+    updateEnrollCourseController,
 );
 
 export default enrollCourseRouter;
