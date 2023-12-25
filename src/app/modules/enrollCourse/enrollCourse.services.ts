@@ -2,11 +2,13 @@ import httpStatus from "http-status";
 import mongoose from "mongoose";
 import { AppError } from "../../ErrorBoundary/error";
 import Course from "../course/course.model";
+import Faculty from "../faculty/faculty.model";
 import OfferCourse from "../offeredCourse/offeredCourse.model";
 import SemesterRegistration from "../semesterRegistration/semesterRegistration.model";
 import { Student } from "../student/student.model";
-import { TEnrollCourse } from "./enrollCourse.interface";
+import { TCourseMarks, TEnrollCourse } from "./enrollCourse.interface";
 import EnrollCourse from "./enrollCourse.model";
+import { calculateGrade } from "./enrollCourse.utils";
 
 // create a new enroll course service
 export const createEnrollCourseService = async (
@@ -138,8 +140,7 @@ export const createEnrollCourseService = async (
 
 // update enroll course service
 export const updateEnrollCourseService = async (
-    userId: string,
-    id: string,
+    facultyId: string,
     payload: Partial<TEnrollCourse>,
 ) => {
     const { offeredCourse, student, semesterRegistration, courseMarks } =
@@ -167,5 +168,55 @@ export const updateEnrollCourseService = async (
         );
     }
 
-    console.log(payload, courseMarks);
+    const faculty = await Faculty.findOne({ id: facultyId }, { _id: 1 });
+    if (!faculty) {
+        throw new AppError(httpStatus.NOT_FOUND, "faculty not found");
+    }
+    // is this faculty are exist into enroll course check
+    const isEnrollCourseBelongToFaculty = await EnrollCourse.findOne({
+        offeredCourse,
+        student,
+        semesterRegistration,
+        faculty: faculty._id,
+    });
+    if (!isEnrollCourseBelongToFaculty) {
+        throw new AppError(httpStatus.FORBIDDEN, "Forbidden");
+    }
+
+    const modifyMarks: Record<string, unknown> = { ...courseMarks };
+    if (modifyMarks && Object.keys(modifyMarks).length) {
+        for (const [key, value] of Object.entries(modifyMarks)) {
+            modifyMarks[`courseMarks.${key}`] = value;
+        }
+    }
+    if (courseMarks?.finalTerm) {
+        // const { classTest1, classTest2, midTerm, finalTerm } =
+        const updateCourseMarks: Record<string, number> = {
+            ...isEnrollCourseBelongToFaculty.toObject().courseMarks,
+        };
+        if (Object.keys(courseMarks).length) {
+            for (const [key, value] of Object.entries(courseMarks)) {
+                updateCourseMarks[key] = updateCourseMarks[key] + value;
+            }
+        }
+
+        const { classTest1, midTerm, classTest2, finalTerm } =
+            updateCourseMarks as TCourseMarks;
+        const totalMarks = Math.ceil(
+            classTest1 * 0.1 +
+                midTerm * 0.3 +
+                classTest2 * 0.1 +
+                finalTerm * 0.5,
+        );
+        console.log(totalMarks);
+        const gradeResult = calculateGrade(totalMarks);
+        modifyMarks.grade = gradeResult.grade;
+        modifyMarks.gradePoints = gradeResult.gradePoints;
+    }
+    const result = await EnrollCourse.findByIdAndUpdate(
+        isEnrollCourseBelongToFaculty._id,
+        modifyMarks,
+        { new: true, runValidators: true },
+    );
+    return result;
 };

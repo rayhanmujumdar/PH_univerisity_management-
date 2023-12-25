@@ -22,8 +22,8 @@ enrollCourseRouter.post(
 
 // course enroll create route
 enrollCourseRouter.patch(
-    "/:id",
-    auth("student"),
+    "/update-enroll-course",
+    auth("faculty"),
     checkValidation(updateEnrollCourseValidationSchema),
     updateEnrollCourseController,
 );

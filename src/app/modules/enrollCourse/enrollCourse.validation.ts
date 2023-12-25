@@ -1,10 +1,10 @@
 import { z } from "zod";
 
 export const courseMarksValidationSchema = z.object({
-    classTest1: z.number().default(0).optional(),
-    midTerm: z.number().default(0).optional(),
-    classTest2: z.number().default(0).optional(),
-    finalTerm: z.number().default(0).optional(),
+    classTest1: z.number().min(0).optional(),
+    midTerm: z.number().min(0).optional(),
+    classTest2: z.number().min(0).optional(),
+    finalTerm: z.number().min(0).optional(),
 });
 
 export const createEnrollCourseValidationSchema = z.object({

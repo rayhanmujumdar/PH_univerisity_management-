@@ -23,8 +23,7 @@ export const createEnrollCourseController = catchAsync(async (req, res) => {
 export const updateEnrollCourseController = catchAsync(async (req, res) => {
     const payload = req.body;
     const userId = req.decoded.userId;
-    const id = req.params.id;
-    const result = await updateEnrollCourseService(userId, id, payload);
+    const result = await updateEnrollCourseService(userId, payload);
     sendResponse(res, {
         success: true,
         statusCode: httpStatus.CREATED,
