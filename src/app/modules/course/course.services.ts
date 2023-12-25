@@ -12,7 +12,7 @@ export const createCourseService = (payload: TCourse) => {
 };
 
 // get all course
-export const getAllCourseService = (query: Record<string, unknown>) => {
+export const getAllCourseService = async (query: Record<string, unknown>) => {
     const course = new QueryBuilder(
         Course.find().populate("preRequisiteCourse.course"),
         query,
@@ -22,7 +22,12 @@ export const getAllCourseService = (query: Record<string, unknown>) => {
         .skip()
         .sort()
         .fields();
-    return course.modelQuery;
+    const result = await course.modelQuery;
+    const meta = await course.countTotal();
+    return {
+        meta,
+        result,
+    };
 };
 
 // get a single course
