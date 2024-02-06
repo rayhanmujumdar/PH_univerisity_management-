@@ -1,11 +1,12 @@
 import { Router } from "express";
+import auth from "../../middleware/auth";
+import checkValidation from "../../middleware/checkValidation";
 import {
     createAcademicSemesterController,
     getASingleAcademicSemesterController,
     getAllAcademicSemesterController,
     updateASingleAcademicSemesterController,
 } from "./academicSemester.controller";
-import checkValidation from "../../middleware/checkValidation";
 import {
     createAdmissionSemesterValidationSchema,
     updateAdmissionSemesterValidationSchema,
@@ -22,9 +23,9 @@ router.post(
 );
 
 // get all academic semester
-router.get("/", getAllAcademicSemesterController);
+router.get("/", auth("admin"), getAllAcademicSemesterController);
 // get single academic semester
-router.get("/:id", getASingleAcademicSemesterController);
+router.get("/:id", auth("admin"), getASingleAcademicSemesterController);
 // update academic semester
 router.patch(
     "/:id",

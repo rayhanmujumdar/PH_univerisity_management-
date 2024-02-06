@@ -11,17 +11,22 @@ export default function auth(...requestedRole: TUser_Role[]) {
         if (!token) {
             throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorize");
         }
-        const decoded = jwt.verify(
-            token,
-            config.jwt_access_secret as string,
-        ) as JwtPayload;
+        let decoded;
+        try {
+            decoded = jwt.verify(
+                token,
+                config.jwt_access_secret as string,
+            ) as JwtPayload;
+        } catch (err) {
+            throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorize");
+        }
         const { userId, role, iat } = decoded;
         if (!decoded) {
             throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorize");
         }
         const user = await User.isUserExistByCustomId(userId);
         if (!user) {
-            throw new AppError(httpStatus.NOT_FOUND, "this user is not found!");
+            throw new AppError(httpStatus.FORBIDDEN, "this user is not found!");
         }
 
         const isDeleted = user.isDeleted;

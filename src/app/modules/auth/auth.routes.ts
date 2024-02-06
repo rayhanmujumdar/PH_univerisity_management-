@@ -34,7 +34,7 @@ authRouter.patch(
 );
 
 // change password route
-authRouter.get(
+authRouter.post(
     "/refresh-token",
     checkValidation(refreshTokenValidationSchema),
     refreshTokenController,

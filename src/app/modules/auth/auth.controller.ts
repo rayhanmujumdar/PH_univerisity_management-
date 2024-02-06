@@ -50,7 +50,9 @@ export const refreshTokenController = catchAsync(async (req, res) => {
         success: true,
         message: "access token retrieved successfully",
         statusCode: httpStatus.OK,
-        data: result,
+        data: {
+            accessToken: result
+        },
     });
 });
 // forget password controller
